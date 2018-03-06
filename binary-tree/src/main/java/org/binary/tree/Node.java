@@ -1,17 +1,32 @@
 package org.binary.tree;
 
-import lombok.Builder;
-import lombok.Getter;
+import java.util.Optional;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
-@Builder
+@RequiredArgsConstructor
 public class Node<T> {
 
     private Node<T> right;
     private Node<T> left;
+
+    @NonNull
     private T       value;
+
+    public Optional<Node<T>> right() {
+        return Optional.ofNullable(right);
+    }
+
+    public Optional<Node<T>> left() {
+        return Optional.ofNullable(left);
+    }
+
+    public T value() {
+        return value;
+    }
 
     @Override
     public String toString() {
