@@ -79,6 +79,7 @@ public class BinaryTree<T extends Comparable<T>> {
     public String toString() {
         return String.valueOf(root);
     }
+
     
     @SafeVarargs
     public static <T extends Comparable<T>> BinaryTree<T> with(T...t) {

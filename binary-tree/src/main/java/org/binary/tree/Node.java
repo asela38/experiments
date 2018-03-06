@@ -19,7 +19,7 @@ public class Node<T> {
     public Optional<Node<T>> right() {
         return Optional.ofNullable(right);
     }
-
+    
     public Optional<Node<T>> left() {
         return Optional.ofNullable(left);
     }
