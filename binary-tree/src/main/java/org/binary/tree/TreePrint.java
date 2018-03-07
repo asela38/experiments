@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/** Developed using TDD + Tranformation Priority Premise
+/** Developed using TDD + Transformation Priority Premise
  * 
  * @author asela.illayapparachchi
  *

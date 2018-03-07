@@ -25,7 +25,7 @@
 	</dependencies>
 
 	<modules>
-
+		<module>kata-gilded-rose</module>
 		<module>first-child</module>
 		<module>binary-tree</module>
 	</modules>
