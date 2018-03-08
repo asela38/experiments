@@ -25,29 +25,36 @@ class GildedRose {
                 continue;
 
             --item.sellIn;
+            
             boolean isSellInDaysOver = item.sellIn < 0;
-
+            boolean isQualityDegradingItem = !(isAgedBrie || isBackStagePasses);
+            boolean isTicket = isBackStagePasses;
+            
             int decrementBy = 1;
 
-            if(isSellInDaysOver) {
+            if (isSellInDaysOver) {
                 decrementBy *= 2;
             }
-            
-            if (isAgedBrie) {
-                decrementBy = -decrementBy;
-            }
 
-            if (isBackStagePasses) {
-                if (isSellInDaysOver) {
+            if (isTicket) {
+
+                boolean lessThan5DaysToShow = item.sellIn < 5;
+                boolean lessThan10DaysToShow = item.sellIn < 10;
+                boolean showIsOver = isSellInDaysOver;
+
+                if (showIsOver)
                     decrementBy = -item.quality;
-                } else if (item.sellIn < 5) {
+                else if (lessThan5DaysToShow)
                     decrementBy = 3;
-                } else if (item.sellIn < 10) {
+                else if (lessThan10DaysToShow) {
                     decrementBy = 2;
                 } else {
                     decrementBy = 1;
                 }
 
+            }
+            
+            if (!isQualityDegradingItem) {
                 decrementBy = -decrementBy;
             }
 
