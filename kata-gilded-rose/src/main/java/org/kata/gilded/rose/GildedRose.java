@@ -1,5 +1,7 @@
 package org.kata.gilded.rose;
 
+import java.util.function.Function;
+
 class GildedRose {
     private static final int    MIN_QUALITY      = 0;
     private static final int    MAX_QUALITY      = 50;
@@ -13,61 +15,56 @@ class GildedRose {
     }
 
     enum DegradeStrategy {
-        NON_DEGRADE() {
-            @Override
-            int getDegradationAmount() {
-                return 0;
+        NON_DEGRADE(sellIn -> quality -> {
+            return 0;
+        }), DEFAULT_DEGRADE(sellIn -> quality -> {
+
+            boolean isSellInDaysOver = sellIn < 0;
+            int degradeBy = 1;
+
+            if (isSellInDaysOver) {
+                degradeBy *= 2;
             }
-        },
-        DEFAULT_DEGRADE() {
-            @Override
-            int getDegradationAmount() {
-                boolean isSellInDaysOver = sellIn < 0;
-                int degradeBy = 1;
+            return degradeBy;
 
-                if (isSellInDaysOver) {
-                    degradeBy *= 2;
-                }
-                return degradeBy;
+        }), COUNTER_DEGRADE(sellIn -> quality -> {
+
+            boolean isSellInDaysOver = sellIn < 0;
+            int upgradeBy = 1;
+
+            if (isSellInDaysOver) {
+                upgradeBy *= 2;
             }
-        },
-        COUNTER_DEGRADE() {
-            @Override
-            int getDegradationAmount() {
-                boolean isSellInDaysOver = sellIn < 0;
-                int upgradeBy = 1;
+            return -upgradeBy;
+        }), TICKET(sellIn -> quality -> {
 
-                if (isSellInDaysOver) {
-                    upgradeBy *= 2;
-                }
-                return -upgradeBy;
+            boolean fiveMoreDaysToShow = sellIn < 5;
+            boolean tenMoreDaysToShow = sellIn < 10;
+            boolean showIsOver = sellIn < 0;
+
+            int upgradeBy = 1;
+
+            if (showIsOver)
+                upgradeBy = -quality;
+            else if (fiveMoreDaysToShow)
+                upgradeBy = 3;
+            else if (tenMoreDaysToShow) {
+                upgradeBy = 2;
             }
-        },
-        TICKET() {
-            @Override
-            int getDegradationAmount() {
-                boolean fiveMoreDaysToShow = sellIn < 5;
-                boolean tenMoreDaysToShow = sellIn < 10;
-                boolean showIsOver = sellIn < 0;
 
-                int upgradeBy = 1;
+            return -upgradeBy;
 
-                if (showIsOver)
-                    upgradeBy = Integer.MIN_VALUE;
-                else if (fiveMoreDaysToShow)
-                    upgradeBy = 3;
-                else if (tenMoreDaysToShow) {
-                    upgradeBy = 2;
-                }
+        });
 
-                return -upgradeBy;
+        private Function<Integer, Function<Integer, Integer>> degradationAmountFn;
 
-            }
-        };
+        private DegradeStrategy(Function<Integer, Function<Integer, Integer>> degradationAmountFn) {
+            this.degradationAmountFn = degradationAmountFn;
+        }
 
-        protected int sellIn;
-
-        abstract int getDegradationAmount();
+        public Function<Integer, Function<Integer, Integer>> getDegradationAmountFn() {
+            return degradationAmountFn;
+        }
 
         static DegradeStrategy to(Item item) {
             DegradeStrategy strategy = DegradeStrategy.DEFAULT_DEGRADE;
@@ -85,12 +82,7 @@ class GildedRose {
                 strategy = DegradeStrategy.DEFAULT_DEGRADE;
             }
 
-       
             return strategy;
-        }
-        
-        public void setSellIn(int sellIn) {
-            this.sellIn = sellIn;
         }
 
     }
@@ -99,14 +91,13 @@ class GildedRose {
         for (Item item : items) {
 
             DegradeStrategy strategy = DegradeStrategy.to(item);
-            
+
             if (strategy == DegradeStrategy.NON_DEGRADE)
                 continue;
-            
-            strategy.setSellIn(--item.sellIn);
-            
-            decreaseQuantity(item, strategy.getDegradationAmount());
 
+            --item.sellIn;
+
+            decreaseQuantity(item, strategy.getDegradationAmountFn().apply(item.sellIn).apply(item.quality));
         }
     }
 
