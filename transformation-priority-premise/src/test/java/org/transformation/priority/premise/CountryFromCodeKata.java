@@ -7,9 +7,13 @@ import org.junit.Test;
 
 public class CountryFromCodeKata {
 
+    private void verifyCountryAndCode(String country, String code) {
+        assertThat(getCountryCode(country), is(code));
+    }
+    
     @Test
     public void countryCodeTest() throws Exception {
-        assertThat(getCountryCode("Australia"), is("AU"));
+        verifyCountryAndCode("Australia", "AU");
     }
 
     private String getCountryCode(String country) {
