@@ -12,8 +12,9 @@ public class CountryFromCodeKata {
         assertThat(getCountryCode("Australia"), is("AU"));
     }
 
-    private String getCountryCode(String code) {
-        return "AU";
+    private String getCountryCode(String country) {
+        String code = "AU";
+        return code;
     }
 
 }
