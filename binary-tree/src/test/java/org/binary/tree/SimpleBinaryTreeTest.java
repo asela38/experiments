@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.junit.Test;
 
 public class SimpleBinaryTreeTest {
@@ -20,6 +23,18 @@ public class SimpleBinaryTreeTest {
         public SNode     right;
         public SNode     left;
 
+        @Override
+        public String toString() {
+            if (left == null && right == null)
+                return String.format("%s", value);
+            if (left == null)
+                return String.format("(%s->%s)", value, String.valueOf(right));
+            if (right == null)
+                return String.format("(%s<-%s)", String.valueOf(left), value);
+
+            return String.format("(%s<-%s->%s)", String.valueOf(left), value, String.valueOf(right));
+        }
+
     }
 
     public static class STree {
@@ -31,20 +46,67 @@ public class SimpleBinaryTreeTest {
         }
 
         public void add(SNode sNode) {
-            if (root.value < sNode.value)
-                root.right = sNode;
+            add(root, sNode);
+        }
+
+        private void add(SNode parent, SNode child) {
+            if (parent.value < child.value)
+                if (parent.right == null)
+                    parent.right = child;
+                else
+                    add(parent.right, child);
+            else if (parent.left == null)
+                parent.left = child;
             else
-                root.left = sNode;
+                add(parent.left, child);
+
+        }
+
+        @Override
+        public String toString() {
+            return root.toString();
         }
 
     }
 
+    private SNode[] nodes = IntStream.range(0, 10).mapToObj(SNode::new).collect(Collectors.toList())
+            .toArray(new SNode[0]);
+
+    @Test
+    public void toStringOfS() throws Exception {
+        STree sTree = new STree(nodes[5]);
+        sTree.add(nodes[3]);
+        sTree.add(nodes[4]);
+        sTree.add(nodes[2]);
+        sTree.add(nodes[8]);
+        sTree.add(nodes[7]);
+       // sTree.add(nodes[9]);
+        System.out.println(sTree);
+    }
+
+    @Test
+    public void when2NodesInWithDescendingValuesAddedTree_shouldSetASConsecutiveLeft() {
+        STree sTree = new STree(nodes[5]);
+        sTree.add(nodes[4]);
+        sTree.add(nodes[2]);
+        assertThat(sTree.root.left, is(nodes[4]));
+        assertThat(sTree.root.left.left, is(nodes[2]));
+    }
+
+    @Test
+    public void when2NodesInWithAscendingValuesAddedTree_shouldSetASConsecutiveRight() {
+        STree sTree = new STree(nodes[5]);
+        sTree.add(nodes[7]);
+        sTree.add(nodes[9]);
+        assertThat(sTree.root.right, is(nodes[7]));
+        assertThat(sTree.root.right.right, is(nodes[9]));
+    }
+
     @Test
     public void whenLessValueNodeAddItShouldBeSetToLeft() throws Exception {
-        SNode node5 = new SNode(5), node2 = new SNode(2);
-        STree sTree = new STree(node5);
-        sTree.add(node2);
-        assertThat(sTree.root.left, is(node2));
+        STree sTree = new STree(nodes[5]);
+        sTree.add(nodes[2]);
+        assertThat(sTree.root.left, is(nodes[2]));
     }
 
     @Test
