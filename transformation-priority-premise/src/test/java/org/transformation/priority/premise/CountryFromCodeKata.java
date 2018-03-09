@@ -1,7 +1,16 @@
 package org.transformation.priority.premise;
 
-public class CountryFromCodeKata { 
+import org.junit.Test;
 
-    
-   
+public class CountryFromCodeKata {
+
+    @Test
+    public void countryCodeTest() throws Exception {
+        getCountryCode();
+    }
+
+    private void getCountryCode() {
+        
+    }
+
 }
