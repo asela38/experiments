@@ -4,6 +4,10 @@ import java.util.function.Function;
 
 public interface DegradeStrategy {
 
+    static final String SULFURAS         = "Sulfuras, Hand of Ragnaros";
+    static final String BACKSTAGE_PASSES = "Backstage passes to a TAFKAL80ETC concert";
+    static final String AGED_BRIE        = "Aged Brie";
+    
     public default Function<Integer, Integer> getDegrade(int sellIn) {
         return Function.identity();
     }
@@ -11,13 +15,13 @@ public interface DegradeStrategy {
     public static DegradeStrategy to(Item item) {
         DegradeStrategy strategy = null;
         switch (item.name) {
-        case GildedRose.SULFURAS:
+        case SULFURAS:
             strategy = new NonDegrade();
             break;
-        case GildedRose.BACKSTAGE_PASSES:
+        case BACKSTAGE_PASSES:
             strategy = new Ticket();
             break;
-        case GildedRose.AGED_BRIE:
+        case AGED_BRIE:
             strategy = new CounterDegrade();
             break;
         default:
