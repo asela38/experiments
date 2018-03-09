@@ -28,5 +28,6 @@
 		<module>kata-gilded-rose</module>
 		<module>first-child</module>
 		<module>binary-tree</module>
+		<module>kata-transformation-priority-premise</module>
 	</modules>
 </project>
