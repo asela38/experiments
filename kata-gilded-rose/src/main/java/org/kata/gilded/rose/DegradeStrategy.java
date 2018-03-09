@@ -1,15 +1,11 @@
 package org.kata.gilded.rose;
 
+import java.util.function.Function;
+
 public interface DegradeStrategy {
 
-    public default int getDegradationAmount(int sellIn, int quality) {
-        boolean isSellInDaysOver = sellIn < 0;
-        int degradeBy = 1;
-
-        if (isSellInDaysOver) {
-            degradeBy *= 2;
-        }
-        return degradeBy;
+    public default Function<Integer, Integer> getDegrade(int sellIn) {
+        return Function.identity();
     }
 
     public static DegradeStrategy to(Item item) {
@@ -32,42 +28,43 @@ public interface DegradeStrategy {
     }
 }
 
-class NonDegrade implements DegradeStrategy {
+class NonDegrade implements DegradeStrategy {}
 
+
+class DefaultDegrade implements DegradeStrategy {
     @Override
-    public int getDegradationAmount(int sellIn, int quality) {
-        return 0;
+    public Function<Integer, Integer> getDegrade(int sellIn) {
+        return quantity -> quantity - (sellIn < 0 ? 2 : 1);
     }
 }
-
-class DefaultDegrade implements DegradeStrategy {}
 
 class CounterDegrade implements DegradeStrategy {
 
     @Override
-    public int getDegradationAmount(int sellIn, int quality) {
-        return -DegradeStrategy.super.getDegradationAmount(sellIn, quality);
+    public Function<Integer, Integer> getDegrade(int sellIn) {
+        return quantity -> quantity + (sellIn < 0 ? 2 : 1);
     }
 }
 
 class Ticket implements DegradeStrategy {
 
     @Override
-    public int getDegradationAmount(int sellIn, int quality) {
+    public Function<Integer, Integer> getDegrade(int sellIn) {
         boolean fiveMoreDaysToShow = sellIn < 5;
         boolean tenMoreDaysToShow = sellIn < 10;
         boolean showIsOver = sellIn < 0;
 
-        int upgradeBy = 1;
-
         if (showIsOver)
-            upgradeBy = -quality;
-        else if (fiveMoreDaysToShow)
-            upgradeBy = 3;
-        else if (tenMoreDaysToShow) {
-            upgradeBy = 2;
-        }
+            return i -> 0;
 
-        return -upgradeBy;
+        return i -> {
+            int upgrade = 1;
+            if (fiveMoreDaysToShow)
+                upgrade = 3;
+            else if (tenMoreDaysToShow) {
+                upgrade = 2;
+            }
+            return i + upgrade;
+        };
     }
 }

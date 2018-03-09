@@ -22,7 +22,7 @@ class GildedRose {
 
             item.sellIn--;
 
-            item.quality -= strategy.getDegradationAmount(item.sellIn, item.quality);
+            item.quality = strategy.getDegrade(item.sellIn).apply(item.quality);
             item.quality = Math.max(Math.min(item.quality, MAX_QUALITY), MIN_QUALITY);
         }
     }
