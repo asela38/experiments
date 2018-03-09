@@ -8,10 +8,10 @@ public class CountryFromCodeKata {
 
     @Test
     public void countryCodeTest() throws Exception {
-        assertNull(getCountryCode());
+        assertNull(getCountryCode(null));
     }
 
-    private String getCountryCode() {
+    private String getCountryCode(String code) {
         return null;
     }
 
