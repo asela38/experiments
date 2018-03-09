@@ -13,7 +13,8 @@ public class CountryFromCodeKata {
     }
 
     private String getCountryCode(String country) {
-        String code = "AU";
+        String code = country.substring(0,2);
+        code = code.toUpperCase();
         return code;
     }
 
