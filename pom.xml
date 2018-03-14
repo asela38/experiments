@@ -29,5 +29,6 @@
 		<module>first-child</module>
 		<module>binary-tree</module>
 		<module>kata-transformation-priority-premise</module>
+		<module>Monte-Carlo</module>
 	</modules>
 </project>
