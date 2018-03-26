@@ -30,5 +30,7 @@
 		<module>binary-tree</module>
 		<module>kata-transformation-priority-premise</module>
 		<module>Monte-Carlo</module>
+		<module>byzantine-fault-tolerance</module>
+		<module>bitcoin-json-rpc-client</module>
 	</modules>
 </project>
