@@ -16,7 +16,7 @@ public class VisualizeProbabilityCalculation {
     private static final String FOLDER = VisualizeProbabilityCalculation.class.getSimpleName();
 
     public enum ImageType {
-        RANDOM, PI, ARGB_SPECTRUM, RANDOM_WALK, RANDOM_WALK2, RANDOM_WALK3;
+        RANDOM, PI, ARGB_SPECTRUM, RANDOM_WALK, RANDOM_WALK2, RANDOM_WALK3, ACKERMAN;
     }
 
     public static void main(String[] args) {
@@ -32,7 +32,7 @@ public class VisualizeProbabilityCalculation {
 
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        ImageType type = ImageType.RANDOM_WALK3;
+        ImageType type = ImageType.ACKERMAN;
         switch (type) {
         case RANDOM:
             randomPixelImage(width, height, image);
@@ -53,6 +53,9 @@ public class VisualizeProbabilityCalculation {
             randomWalk(width, height, i, 0, 0,  image);
             randomWalk(width, height, i, width, height,  image);
             break;
+        case ACKERMAN:
+            ackerman( ( i % 3) + 1 , (i / 3) + 1, image);
+            break;
         }
 
         try {
@@ -64,11 +67,19 @@ public class VisualizeProbabilityCalculation {
         }
     }
 
+    public static Integer ackerman(int m, int n, BufferedImage image)  {
+            image.setRGB( Math.max(Math.min(m * 2, image.getWidth() -1), 0) ,
+                    Math.max(Math.min(n * 2, image.getHeight() - 1), 0), argbPixelFromColor(Color.BLUE));
+            if(m == 0) return n+1;
+            if(m > 0 && n == 0 ) return ackerman(m-1, 1, image);
+            return ackerman(m-1, ackerman(m, n-1, image), image);
+    }
+
     private static void drawARBSpectra(int width, int height, BufferedImage image) {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int p = createARGBPixel(255, 255, 255, 0); // pixel
-                image.setRGB(x, y, 0xffed1b24);
+                image.setRGB(x, y, 0x0000ff);
                 LOG.fine(String.format("[ x = %d, y = %d, p= %d", x, y, p));
 
             }

@@ -24,6 +24,11 @@
 		</dependency>
 	</dependencies>
 
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
 	<modules>
 		<module>kata-gilded-rose</module>
 		<module>first-child</module>
@@ -32,5 +37,7 @@
 		<module>Monte-Carlo</module>
 		<module>byzantine-fault-tolerance</module>
 		<module>bitcoin-json-rpc-client</module>
+		<module>meta-programming</module>
+		<module>automata</module>
 	</modules>
 </project>
