@@ -38,18 +38,15 @@
 		</dependency>
 	</dependencies>
 
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
 
 	<modules>
 		<module>kata-gilded-rose</module>
 		<module>first-child</module>
 		<module>binary-tree</module>
-		<module>kata-transformation-priority-premise</module>
+
 		<module>food-recipes</module>
 		<module>kata-transformation-priority-premise</module>
+
 		<module>Monte-Carlo</module>
 		<module>byzantine-fault-tolerance</module>
 		<module>bitcoin-json-rpc-client</module>
