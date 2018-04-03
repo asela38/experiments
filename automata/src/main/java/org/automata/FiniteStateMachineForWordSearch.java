@@ -1,12 +1,13 @@
 package org.automata;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Hello world!
@@ -16,23 +17,21 @@ public class FiniteStateMachineForWordSearch {
     public static void main(String[] args) throws Exception {
         try (Scanner scanner = new Scanner(new File("sample.txt"))) {
 
-            String searchText = "valid";
+            String searchText = "litigation.";
 
-            FSM<State> fsm = new FSM<>(Arrays.asList(State.values()), State.UNMATCHED);
+            FSM<Integer> fsm = new FSM<>(
+                    IntStream.iterate(0, i -> i++).limit(searchText.length()).boxed().collect(Collectors.toList()), 0);
 
-            fsm.addTransition(State.UNMATCHED, 'v', State.MATCHING);
-            fsm.addTransition(State.MATCHING, 'a', State.MATCHING);
-            fsm.addTransition(State.MATCHING, 'l', State.MATCHING);
-            fsm.addTransition(State.MATCHING, 'i', State.MATCHING);
-            fsm.addTransition(State.MATCHING, 'd', State.MATCHED);
+            for (int i = 0; i < searchText.length(); i++)
+                fsm.addTransition(i, searchText.charAt(i), i + 1);
 
-            fsm.accept(State.MATCHED);
+            fsm.accept(searchText.length());
 
-            int count = 1;
+            int count = 0;
             while (!fsm.isAccepted() && scanner.hasNext()) {
                 scanner.next().chars().forEach(i -> fsm.take((char) i));
                 count++;
-                System.out.println(fsm.current);
+                if(fsm.current != 0) System.out.println(fsm.current);
             }
 
             System.out.printf("%n at %d", count);
