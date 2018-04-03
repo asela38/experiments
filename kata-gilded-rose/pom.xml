@@ -16,4 +16,16 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/com.github.nikolavp/approval -->
+		<dependency>
+			<groupId>com.github.nikolavp</groupId>
+			<artifactId>approval</artifactId>
+			<version>0.3</version>
+			<type>pom</type>
+			<scope>runtime</scope>
+		</dependency>
+
+	</dependencies>
 </project>
