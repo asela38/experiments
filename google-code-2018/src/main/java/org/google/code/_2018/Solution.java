@@ -2,11 +2,10 @@ package org.google.code._2018;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class TroubleSort {
+public class Solution {
 	static {
 		try {
 			System.setIn(new FileInputStream("trouble-sort-input-2.txt"));
@@ -28,8 +27,7 @@ public class TroubleSort {
 			int[] v = new int[n];
 			for (int j = 0; j < n; j++)
 				v[j] = scanner.nextInt();
-			System.out.printf("Case #%d: %s %n", i, sanitize(troubleSort(v)));
-			// troubleSort(v);
+			System.out.printf("Case #%d: %s %n", i, sanitize(troubleSort2(v)));
 		}
 	}
 
@@ -39,22 +37,20 @@ public class TroubleSort {
 
 	private static int troubleSort2(int[] l) {
 		int errorIndex = -1;
-		int length = l.length / 2;
-		int[] l1 = new int[l.length - length], l2 = new int[length];
+		int[] l1 = new int[(l.length + 1) / 2], l2 = new int[l.length / 2];
 		{
 			int i = 0, j = 0;
-			for (; j < length; i += 2, j++) {
+			for (; i < l.length - 2; i += 2, j++) {
 				l1[j] = l[i];
 				l2[j] = l[i + 1];
 			}
-			if (l.length - length > length)
+			if (i < l.length)
 				l1[j] = l[i];
 		}
 
 		Arrays.sort(l1);
 		Arrays.sort(l2);
-		System.out.println(Arrays.toString(l1));
-		System.out.println(Arrays.toString(l2));
+
 		{
 			int i = 0, j = 0;
 			for (; i < l.length - 1; i += 2, j++)
@@ -69,33 +65,4 @@ public class TroubleSort {
 		return errorIndex;
 	}
 
-	private static int troubleSort(int[] l) {
-		// System.out.printf("Sorting : %s%n", Arrays.toString(l));
-		boolean done = false;
-		while (!done) {
-			done = true;
-			for (int i = 0; i < l.length - 2; i++)
-				if (l[i] > l[i + 2]) {
-					done = false;
-					int temp = l[i];
-					l[i] = l[i + 2];
-					l[i + 2] = temp;
-					// System.out.printf("Rotate %s%n", Arrays.toString(l));
-				}
-		}
-		int errorIndex = -1;
-		for (int i = 0; i < l.length - 1; i++)
-			if (l[i] > l[i + 1]) {
-				errorIndex = i;
-				break;
-			}
-
-		// getout(errorIndex == -1).printf("Sorted : %s error-index:%d%n%n",
-		// Arrays.toString(l), errorIndex);
-		return errorIndex;
-	}
-
-	private static PrintStream getout(boolean c) {
-		return c ? System.out : System.err;
-	}
 }
