@@ -16,11 +16,9 @@ public class CubeUFo {
 	}
 
 	public static void main(String[] args) {
-
 		try (Scanner scanner = new Scanner(System.in)) {
 			process(scanner);
 		}
-
 	}
 
 	private static void process(Scanner scanner) {
@@ -30,44 +28,20 @@ public class CubeUFo {
 
 	}
 
-	private static void solve0(double value, int j) {
-		double ans = 0D;
-		int i = 0;
-
-		double minDiff = Double.MAX_VALUE;
-		double range = 1_000_000D;
-		double limit = range / 4;
-
-		while (i <= limit) {
-			double r = (i++ / range) * Math.PI;
-			double n = Math.cos(r) + Math.sin(r);
-			double diff = Math.abs(n - value);
-			if (diff < minDiff) {
-				minDiff = diff;
-				ans = r;
-			}
-		}
-
-		double cos = 0.5 * Math.cos(ans);
-		double sin = 0.5 * Math.sin(ans);
-		System.out.println("Case #" + j + ":");
-		System.out.println(cos + " " + sin + " " + 0);
-		System.out.println(-sin + " " + cos + " " + 0);
-		System.out.println(0 + " " + 0 + " " + 0.5);
-
-	}
-
 	private static void solve(double value, int j) {
-		solve0(value, j);
 
 		double angleX = Math.PI / 4, angleY = 0;
 		if (value < 1.414213D) {
 			angleX = Math.asin(Math.pow(value, 2) - 1) / 2;
+		} else {
+			angleY = Math.acos(Math.sqrt(2) * 2 * (value - 1.414213D));
 		}
 		double cosX = 0.5 * Math.cos(angleX);
 		double sinX = 0.5 * Math.sin(angleX);
+		double cosY = Math.cos(angleY);
+		double sinY = Math.sin(angleY);
 		System.out.println("Case #" + j + ":");
-		System.out.println(cosX + " " + sinX + " " + 0);
+		System.out.println((cosX * sinY) + " " + (sinX * sinY) + " " + (0.5 * cosY));
 		System.out.println(-sinX + " " + cosX + " " + 0);
 		System.out.println(0 + " " + 0 + " " + 0.5);
 
