@@ -1,4 +1,4 @@
-package org.google.code.jam.y2017;
+package org.google.code.jam.y2017.r1a;
 
 import java.io.File;
 import java.io.FileInputStream;
