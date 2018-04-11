@@ -1,2 +1,2 @@
 # experiments
-parent project for my experiments 
+Archive of all simple projects of experimentation  
