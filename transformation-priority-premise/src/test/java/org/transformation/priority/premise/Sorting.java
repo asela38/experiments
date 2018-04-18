@@ -63,8 +63,7 @@ public class Sorting {
     }
 
     @Rule
-    public Stopwatch stopWatch = new Stopwatch() {
-    };
+    public Stopwatch stopWatch = new Stopwatch() {};
 
     @Test
     public void testLarge() throws Exception {
