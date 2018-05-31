@@ -50,4 +50,5 @@ and Streams
 ## Reference
 
 [Functor And Monad Examples in Plain Java](https://dzone.com/articles/functor-and-monad-examples-in-plain-java)
+
 [Monads Demystified](http://blog.reverberate.org/2015/08/monads-demystified.html)
