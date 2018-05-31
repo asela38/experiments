@@ -18,8 +18,8 @@ and Streams
 
 ``` java
 	
-	 // Finding PI with Random Numbers
-	 @Test
+    // Finding PI with Random Numbers
+    @Test
     public void testStreamTwo() throws Exception {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
