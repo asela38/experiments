@@ -55,5 +55,6 @@
 		<module>tcp-over-ip</module>
 		<module>google-code-2018</module>
 		<module>google-code-jam-2017</module>
+		<module>java-monads</module>
 	</modules>
 </project>
