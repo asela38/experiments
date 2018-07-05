@@ -46,7 +46,7 @@
 
 		<module>food-recipes</module>
 		<module>kata-transformation-priority-premise</module>
-
+		<module>Algorithms</module>
 		<module>Monte-Carlo</module>
 		<module>byzantine-fault-tolerance</module>
 		<module>bitcoin-json-rpc-client</module>
