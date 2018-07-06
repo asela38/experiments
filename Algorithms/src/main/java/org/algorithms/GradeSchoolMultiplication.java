@@ -88,6 +88,39 @@ public class GradeSchoolMultiplication {
 
         return answer.replaceAll("^0*", "");
     }
+    
+    
+    
+    //karatsuba Multiplication
+    private String kMultiply(String number1, String number2) {
+        
+        int maxLength = Math.max(number1.length(), number2.length());
+        if(maxLength == 1) {
+            return String.valueOf(Integer.parseInt(number1) * Integer.parseInt(number2));
+        }
+        maxLength += maxLength%2;
+        
+        String n1 = String.format("%0"+maxLength+"s", number1).replace(" ", "0");
+        String n2 = String.format("%0"+maxLength+"s", number2).replace(" ", "0");
+        
+        int partSize = maxLength>>1;
+        
+        String a = n1.substring(0, partSize);
+        String b = n1.substring(partSize);
+        String c = n2.substring(0, partSize);
+        String d = n2.substring(partSize);
+        
+        String s1 = kMultiply(a, c);
+        String s2 = kMultiply(b, d);
+        String s3 = kMultiply(new BigInteger(a).add(new BigInteger(b)).toString(), new BigInteger(c).add(new BigInteger(d)).toString());
+        String s4 = new BigInteger(s3).subtract(new BigInteger(s2)).subtract(new BigInteger(s1)).toString();
+        
+        BigInteger p1 = new BigInteger("10").pow(partSize*partSize).multiply(new BigInteger(s1));
+        BigInteger p2 = new BigInteger("10").pow(partSize).multiply(new BigInteger(s4));
+        
+        
+        return new BigInteger(s2).add(p1).add(p2).toString();
+    }
 
     private char[] reverse(char[] array) {
         char[] newArray = new char[array.length];

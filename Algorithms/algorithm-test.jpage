@@ -1,0 +1,6 @@
+
+
+//  %[argument_index$][flags][width][.precision]conversion
+String.format("%020d",121)
+String.format("%20s","121")
+(java.lang.String)                  121
