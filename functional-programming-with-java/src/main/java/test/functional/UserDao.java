@@ -1,7 +1,5 @@
 package test.functional;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,15 +22,12 @@ public class UserDao {
                 + "     date_of_birth                                        "
                 + " FROM user                                                ";
 
-        return template.query(selectQuery.replaceAll("\\s+", " "), Collections.emptyMap(), new RowMapper<User>() {
-            @Override
-            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                User user = new User();
-                user.setFirstName(rs.getString("first_name"));
-                user.setLastName(rs.getString("last_name"));
-                user.setBirthDate(rs.getDate("date_of_birth").toLocalDate());
-                return user;
-            }
+        return template.query(selectQuery.replaceAll("\\s+", " "), Collections.emptyMap(), (RowMapper<User>) (rs, rowNum) -> {
+            User user = new User();
+            user.setFirstName(rs.getString("first_name"));
+            user.setLastName(rs.getString("last_name"));
+            user.setBirthDate(rs.getDate("date_of_birth").toLocalDate());
+            return user;
         });
     }
 

@@ -1,3 +1,9 @@
 
 
 System.out.println("Hello, World");
+
+Syntax error on token(s), misplaced construct(s)
+byte[] digest = MessageDigest.getInstance("SHA1").digest("java123".getBytes());
+String encode = new String(Base64.getEncoder().encode(digest));
+System.out.println(encode); 
+System.out.println(Base64.getEncoder().encodeToString(digest)); (No explicit return value)
