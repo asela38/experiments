@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active:
+    - dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: toor
+    driver-class-name: com.mysql.jdbc.Driver
