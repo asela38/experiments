@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 public class KaratsubaMultiplication {
-    
+
     @Test
     public void test_trivial() {
         verify("1", "2", "2");
         verify("9", "9", "81");
     }
-    
+
     @Test
     public void test_multiplesOf11() {
         verify("1", "1", "1");
@@ -29,7 +29,7 @@ public class KaratsubaMultiplication {
         verify("1111", "2222", "2468642");
         verify("11111", "22222", "246908642");
     }
-    
+
     @Test
     public void test_randomlyOnValuesLessThan10000() {
 
@@ -39,20 +39,24 @@ public class KaratsubaMultiplication {
                         String.valueOf(Integer.parseInt(arr[0]) * Integer.parseInt(arr[1]))));
 
     }
-    
+
     @Test
     public void test_trivial_bigInteger() {
-        verify("99999999999999999999", "99999999999999999999", new BigInteger("99999999999999999999").pow(2).toString());
-        verify("9999999999999999999999999999999999999999", "9999999999999999999999999999999999999999", new BigInteger("9999999999999999999999999999999999999999").pow(2).toString());
+    //    verify("99999999999999999999", "99999999999999999999",
+      //          new BigInteger("99999999999999999999").pow(2).toString());
+        verify("9999999999999999999999999999999999999999", "9999999999999999999999999999999999999999",
+                new BigInteger("9999999999999999999999999999999999999999").pow(2).toString());
+        
+        System.out.println(kMultiply("3141592653589793238462643383279502884197169399375105820974944592", "2718281828459045235360287471352662497757247093699959574966967627"));
     }
-    
+
     private void verify(String number1, String number2, String answer) {
         assertThat(kMultiply(number1, number2), is(answer));
     }
-    
+
     // karatsuba Multiplication
     private String kMultiply(String number1, String number2) {
-
+        System.out.println(number1 + "/" + number2);
         int maxLength = Math.max(number1.length(), number2.length());
         if (maxLength == 1) {
             return String.valueOf(Integer.parseInt(number1) * Integer.parseInt(number2));
