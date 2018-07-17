@@ -1,0 +1,38 @@
+
+
+Map<Integer, Integer> map = new HashMap<>();
+//map.put(null, null);
+map.get(null);
+
+map.containsKey(null);(boolean) false(boolean) true
+
+
+The method prinln(long) is undefined for the type PrintStreamThe method prinln(long) is undefined for the type PrintStreamThe method prinln(long) is undefined for the type PrintStreamSyntax error, insert ";" to complete BlockStatementsMap<Integer,Integer> map = new HashMap<>(1<<18, 4f);
+for(int i = 0; i < 1<<20; i++) {
+	map.put(i,i);
+}
+
+System.out.println(System.currentTimeMillis());
+for(int i = 0; i < 1_000_000; i++) {
+	Integer value = map.get(i);
+
+}
+System.out.println(System.currentTimeMillis());
+for(int i = 0; i < 1_000_000; i++) {
+	map.containsKey(1<<10);
+
+}
+System.out.println(System.currentTimeMillis()); (No explicit return value)
+
+
+HashMap<String,String> dictionary = new HashMap<>();
+
+if(dictionary.containsKey(word)) {
+	return dictionary.get(word);
+}
+}
+
+for(String word : words) {
+	
+}
+}

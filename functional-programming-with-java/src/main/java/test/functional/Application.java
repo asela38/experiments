@@ -16,37 +16,34 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application implements ApplicationRunner {
 
-    private static Logger LOG = LoggerFactory.getLogger(Application.class);
-    
-    @Autowired
-    private UserDao dao;
+	private static Logger LOG = LoggerFactory.getLogger(Application.class);
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+	@Autowired
+	private UserDao dao;
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        
-        File file = File.createTempFile("Application", ".lock");
-        LOG.info("Lock file created : {}", file.getAbsolutePath());
-        
-        List<User> allUsers = dao.getAllUsers();
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
 
-        for (User user : allUsers) {
-            LOG.info(user.toString());
-        }
-        
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {   
-            @Override
-            public void run() {
-                try {
-                    Files.delete(file.toPath());
-                    LOG.info("Successfully delete the lock file : {}", file.getAbsolutePath());
-                } catch (IOException e) {
-                    LOG.error("Fail to delete log file", e);
-                }
-            }
-        }));
-    }
+	@Override
+	public void run(ApplicationArguments args) throws Exception {
+
+		File file = File.createTempFile("Application", ".lock");
+		LOG.info("Lock file created : {}", file.getAbsolutePath());
+
+		List<User> allUsers = dao.getAllUsers();
+
+		for (User user : allUsers) {
+			LOG.info(user.toString());
+		}
+
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			try {
+				Files.delete(file.toPath());
+				LOG.info("Successfully delete the lock file : {}", file.getAbsolutePath());
+			} catch (IOException e) {
+				LOG.error("Fail to delete log file", e);
+			}
+		}));
+	}
 }

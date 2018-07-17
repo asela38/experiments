@@ -1,6 +1,8 @@
-package org.kata.gilded.rose;
+package org.kata.gilded.rose.pre;
 
 import java.util.function.Function;
+
+import org.kata.gilded.rose.Item;
 
 public interface DegradeStrategy {
 

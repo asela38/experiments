@@ -1,6 +1,6 @@
 package org.java.monads;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.security.MessageDigest;
 import java.util.Base64;
@@ -44,6 +44,17 @@ public class OptionalTest {
                         .map(Base64.getEncoder()::encodeToString)
                         .orElseThrow(IllegalArgumentException::new);
     }
+    
+    public int size(String string) throws Exception {
+        return Optional.ofNullable(string)
+                        .map(String::length)
+                        .orElseThrow(IllegalArgumentException::new);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+	public void sizeIfNullExcpetException() throws Exception {
+		size(null);
+	}
 
 
 }
