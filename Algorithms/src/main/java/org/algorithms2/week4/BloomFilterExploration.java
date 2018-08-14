@@ -1,4 +1,4 @@
-package org.algorithms4;
+package org.algorithms2.week4;
 
 import java.util.Arrays;
 

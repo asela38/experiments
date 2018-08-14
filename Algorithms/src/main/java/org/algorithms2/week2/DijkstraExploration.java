@@ -1,4 +1,4 @@
-package org.algorithms2;
+package org.algorithms2.week2;
 
 import java.io.File;
 import java.nio.file.Files;

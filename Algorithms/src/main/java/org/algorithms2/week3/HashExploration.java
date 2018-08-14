@@ -1,4 +1,4 @@
-package org.algorithms3;
+package org.algorithms2.week3;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
