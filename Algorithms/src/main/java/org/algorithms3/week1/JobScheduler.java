@@ -2,17 +2,27 @@ package org.algorithms3.week1;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
 public class JobScheduler {
 
-    private static final String TEST_FILE_LOCATION = "C:\\Users\\asela.illayapparachc\\git\\stanford-algs\\testCases\\course3\\assignment1SchedulingAndMST\\questions1And2\\input_random_";
+    private static final String TEST_FILE_DIR      = "C:\\Users\\asela.illayapparachc\\git\\stanford-algs\\testCases\\course3\\assignment1SchedulingAndMST\\questions1And2\\";
+    private static final String TEST_FILE_LOCATION = TEST_FILE_DIR + "input_random_";
     private static final String JOB_FILE           = "C:\\Asela\\mydocs\\Coursera\\jobs.txt";
     private static final String TEST_FILE          = TEST_FILE_LOCATION + "44_10000.txt";
 
@@ -92,9 +102,38 @@ public class JobScheduler {
     }
 
     @Test
+    public void testForAll() throws Exception {
+
+        Files.walk(Paths.get(TEST_FILE_DIR)).map(p -> p.toFile()).filter(f -> f.getName().contains("input_random"))
+                .sorted((a, b) -> Long.compare(a.length(), b.length())).forEach(f -> {
+                    try {
+                        String outputFile = f.getAbsolutePath().replace("input", "output");
+                        List<String> output = Collections.emptyList();
+                        try (BufferedReader reader = new BufferedReader(new FileReader(outputFile))) {
+                            output = reader.lines().collect(Collectors.toList());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        List<Long> result = Collections.emptyList();
+                        System.out.printf("Expected : %10s Calculated: %10s %6s File: %s %n", output,
+                                result = process(f.getAbsolutePath()), output.toString().equals(result.toString()),
+                                f.getName());
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    @Test
     public void trivalAsDoubleGeneralized() throws Exception {
+        String jobFile = JOB_FILE;
+        System.out.println(process(jobFile).stream().map(Objects::toString).collect(Collectors.joining("\n")));
+    }
+
+    private List<Long> process(String jobFile) throws FileNotFoundException {
+        List<Long> results = new ArrayList<>();
         BiFunction<Double, Double, Double> difference = (a, b) -> a - b, ratio = (a, b) -> a / b;
-        try (Scanner scanner = new Scanner(new File(TEST_FILE))) {
+        try (Scanner scanner = new Scanner(new File(jobFile))) {
             int n = scanner.nextInt();
             // 0 - weight | 1 - length | 2 - priority
 
@@ -127,8 +166,10 @@ public class JobScheduler {
                     weightedCompletionTime += aggregatedLegnth * min[0];
 
                 }
-                System.out.println(weightedCompletionTime);
+                results.add(weightedCompletionTime);
             }
+
         }
+        return results;
     }
 }

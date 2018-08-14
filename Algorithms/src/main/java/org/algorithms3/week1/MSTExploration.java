@@ -26,9 +26,9 @@ public class MSTExploration {
     private static final String _1_10_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "1_10.txt";
     private static final String _2_10_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "2_10.txt" /*-12829*/;
     private static final String _9_40_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "9_40.txt" /*-49942*/ ;
-    private static final String _5_20_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "5_20.txt" /*-49942*/ ;
+    private static final String _5_20_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "5_20.txt" /*-10519*/ ;
     private static final String _68_100000_FILE    = TEST_FILE_LOCATION + INPUT_FILE + "68_100000.txt" /* -229263767*/;
-
+    private static final String JOB_FILE           = "C:\\Asela\\mydocs\\Coursera\\edges.txt";
     @Test
     public void testFile() throws Exception {
         try (BufferedReader reader = new BufferedReader(new FileReader(_1_10_FILE))) {
@@ -37,8 +37,20 @@ public class MSTExploration {
     }
 
     @Test
+    public void trivial() throws Exception {
+        LOGGER.setLevel(Level.ALL);
+        System.out.println(process(_1_10_FILE)); // -7430
+        System.out.println(process(_5_20_FILE)); // -10519
+        System.out.println(process(_2_10_FILE)); // -12829
+        System.out.println(process(_9_40_FILE)); // -49942
+        System.out.println(process(_68_100000_FILE)); // -229263767
+        System.out.println(process(JOB_FILE)); // -10519
+    }
+
+    @Test
     public void testForAll() throws Exception {
         LOGGER.setLevel(Level.FINE);
+        // new StopW
 
         Files.walk(Paths.get(TEST_FILE_LOCATION)).map(p -> p.toFile()).filter(f -> f.getName().contains("input_random"))
                 .sorted((a, b) -> Long.compare(a.length(), b.length())).forEach(f -> {
@@ -59,12 +71,6 @@ public class MSTExploration {
                 });
     }
 
-    @Test
-    public void trivial() throws Exception {
-        LOGGER.setLevel(Level.ALL);
-        System.out.println(process(_5_20_FILE)); // -10519
-    }
-
     private long process(String file) throws FileNotFoundException {
         try (Scanner scanner = new Scanner(new File(file))) {
             Map<Integer, Map<Integer, Integer>> adj = new HashMap<>();
@@ -77,11 +83,12 @@ public class MSTExploration {
                 int d = scanner.nextInt();
                 adj.putIfAbsent(v, new HashMap<>());
                 adj.putIfAbsent(w, new HashMap<>());
+                d = Integer.min(d, adj.get(v).getOrDefault(w, d));
                 adj.get(v).put(w, d);
                 adj.get(w).put(v, d);
             }
 
-            System.out.println("ADJ : " + adj);
+            // System.out.println("ADJ : " + adj);
 
             boolean[] mst = new boolean[n];
             int[] shortest = new int[n];
@@ -93,7 +100,7 @@ public class MSTExploration {
             heap.offer(1);
             while (!heap.isEmpty()) {
                 Integer v = heap.poll();
-                System.out.printf("%4s - %10s%n", v, shortest[v - 1]);
+                // System.out.printf("%4s - %10s%n", v, shortest[v - 1]);
                 mst[v - 1] = true;
                 for (Integer w : adj.getOrDefault(v, new HashMap<>()).keySet()) {
                     if (!mst[w - 1]) {
@@ -103,7 +110,9 @@ public class MSTExploration {
                     }
 
                 }
-                System.out.println(Arrays.toString(shortest));
+                // System.out.println(Arrays.stream(shortest).filter(i -> i != Integer.MAX_VALUE).boxed()
+                // .map(Objects::toString).collect(Collectors.joining(", ")));
+                // System.out.println(Arrays.toString(shortest));
             }
 
             return Arrays.stream(shortest).asLongStream().sum();
