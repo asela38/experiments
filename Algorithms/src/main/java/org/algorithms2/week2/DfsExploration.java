@@ -1,4 +1,4 @@
-package org.algorithms2;
+package org.algorithms2.week2;
 
 import java.util.Arrays;
 import java.util.HashMap;
