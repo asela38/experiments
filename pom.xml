@@ -56,5 +56,7 @@
 		<module>google-code-2018</module>
 		<module>google-code-jam-2017</module>
 		<module>java-monads</module>
+		<module>hacker-delight</module>
+		<module>hacker-rank</module>
 	</modules>
 </project>
