@@ -86,15 +86,14 @@ public class GcdMatrix {
         scanner.close();
     }
 
-//    Map<String, Integer> cache = new HashMap<>();
+    // Map<String, Integer> cache = new HashMap<>();
 
     private int gcd(int i, int j) {
-        String key = key(i, j);
-     //   if (cache.containsKey(key)) {
-    //        return cache.get(key);
-    //    }
+        // if (cache.containsKey(key)) {
+        // return cache.get(key);
+        // }
         int gcd = gcd_0(i, j);
-    //    cache.put(key, gcd);
+        // cache.put(key, gcd);
         return gcd;
     }
 
@@ -105,10 +104,6 @@ public class GcdMatrix {
             a = t;
         }
         return a;
-    }
-
-    private String key(int i, int j) {
-        return Integer.max(i, j) + "-" + Integer.min(i, j);
     }
 
 }

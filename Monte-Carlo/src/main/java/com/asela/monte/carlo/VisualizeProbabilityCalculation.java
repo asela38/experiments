@@ -149,12 +149,8 @@ public class VisualizeProbabilityCalculation {
 
     private static int argbPixelFromColor(Color color) {
         int pixel = createARGBPixel(color.getAlpha(), color.getRed(), color.getGreen(), color.getBlue());
-        // printPixel(pixel);
+        //  LOG.info("Pixel Hex : " + Integer.toHexString(pixel));
         return pixel;
-    }
-
-    private static void printPixel(int pixel) {
-        LOG.info("Pixel Hex : " + Integer.toHexString(pixel));
     }
 
     private static int createARGBPixel(int a, int r, int g, int b) {
