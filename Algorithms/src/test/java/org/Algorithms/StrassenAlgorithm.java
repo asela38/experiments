@@ -1,4 +1,4 @@
-package org.algorithms;
+package org.Algorithms;
 
 import org.junit.Test;
 

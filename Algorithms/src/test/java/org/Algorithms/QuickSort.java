@@ -1,15 +1,13 @@
-package org.algorithms;
+package org.Algorithms;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.Test;
 
-public class QuickSortOriginal {
+public class QuickSort {
 
     @Test
     public void testQuickSort() throws Exception {
@@ -23,6 +21,7 @@ public class QuickSortOriginal {
 
     private static int swapCounter = 0;
 
+    
     @Test
     public void testToIntegerMax() throws Exception {
         int[] array1 = ThreadLocalRandom.current().ints(0, Integer.MAX_VALUE).limit(2_000_000).toArray();
@@ -33,10 +32,10 @@ public class QuickSortOriginal {
         a = System.currentTimeMillis();
         quickSort(array1);
         System.out.println(System.currentTimeMillis() - a);
-        assertEquals(Arrays.toString(array1), Arrays.toString(array2));
+        assertEquals(Arrays.toString(array1),  Arrays.toString(array2));
         System.out.println(swapCounter);
     }
-
+    
     @Test
     public void testName() throws Exception {
         testWithSwap(1, 3, 5, 2, 4, 6);
@@ -51,24 +50,6 @@ public class QuickSortOriginal {
         Arrays.sort(array2);
         assertEquals(Arrays.toString(array1), Arrays.toString(array2));
         System.out.println(swapCounter);
-    }
-
-    @Test
-    public void testWithFile() throws Exception {
-        testWithSwap(Files.readAllLines(new File("C:\\usr\\QuickSort.txt").toPath()).stream().mapToInt(Integer::parseInt).toArray());
-        
-        int[] array = Files.readAllLines(new File("C:\\usr\\QuickSort.txt").toPath()).stream().mapToInt(Integer::parseInt).toArray();
-        swap(array,0, array.length - 1);
-        testWithSwap(array);
-        
-        array = Files.readAllLines(new File("C:\\usr\\QuickSort.txt").toPath()).stream().mapToInt(Integer::parseInt).toArray();
-        
-        System.out.printf("%n%s %s %s%n", array[0], array[array.length/2], array[array.length - 1]);
-        
-        swap(array,0, array.length / 2);
-        testWithSwap(array);
-        
-        
     }
 
     private void quickSort(int[] array) {
@@ -97,12 +78,12 @@ public class QuickSortOriginal {
         int index = from + 1;
 
         int i = from;
+        while (i <= to && arr[i] >= pivot)
+            i++;
 
         while (i <= to) {
-            if (arr[i] < pivot) {
-                swapCounter++;
+            if (arr[i] < pivot)
                 swap(arr, index++, i);
-            }
             i++;
         }
 
@@ -112,10 +93,12 @@ public class QuickSortOriginal {
     }
 
     private void swap(int[] arr, int from, int to) {
-
+        if (from == to)
+          return;
         int temporary = arr[from];
         arr[from] = arr[to];
         arr[to] = temporary;
+        swapCounter++;
     }
 
 }

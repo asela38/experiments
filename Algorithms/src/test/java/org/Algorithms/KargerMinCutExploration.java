@@ -1,4 +1,4 @@
-package org.algorithms;
+package org.Algorithms;
 
 import java.io.File;
 import java.nio.file.Files;
