@@ -9,10 +9,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * Hello world!
- *
- */
+/** Hello world! */
 public class FiniteStateMachineForWordSearch {
     public static void main(String[] args) throws Exception {
         try (Scanner scanner = new Scanner(new File("sample.txt"))) {
@@ -31,7 +28,8 @@ public class FiniteStateMachineForWordSearch {
             while (!fsm.isAccepted() && scanner.hasNext()) {
                 scanner.next().chars().forEach(i -> fsm.take((char) i));
                 count++;
-                if(fsm.current != 0) System.out.println(fsm.current);
+                if (fsm.current != 0)
+                    System.out.println(fsm.current);
             }
 
             System.out.printf("%n at %d", count);
@@ -39,12 +37,15 @@ public class FiniteStateMachineForWordSearch {
         }
     }
 
+    @SuppressWarnings("unused")
     private enum State {
         MATCHED, UNMATCHED, MATCHING;
     }
 
     private static class FSM<T> {
+        @SuppressWarnings("unused")
         private List<T>                   states;
+        @SuppressWarnings("unused")
         private List<Character>           alphabet;
         private Map<T, Map<Character, T>> transitionFunction = new HashMap<>();
         private final T                   initial;

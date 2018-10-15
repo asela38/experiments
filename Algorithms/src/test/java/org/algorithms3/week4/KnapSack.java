@@ -15,6 +15,7 @@ import org.junit.Test;
 
 public class KnapSack {
 
+    @SuppressWarnings("unused")
     private static final Logger LOGGER             = Logger.getAnonymousLogger();
 
     private static final String TEST_FILE_LOCATION = "C:\\Users\\asela.illayapparachc\\git\\stanford-algs\\testCases\\course3\\assignment4Knapsack\\";
@@ -88,6 +89,7 @@ public class KnapSack {
         }
     }
 
+    @SuppressWarnings("unused")
     private void printData(int W, int[] v, int[] s, long[][] w) {
         System.out.println("--");
         System.out.println(W);

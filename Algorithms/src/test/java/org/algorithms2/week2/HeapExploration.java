@@ -120,6 +120,7 @@ public class HeapExploration {
          * 
          */
         int[] heap = new int[] { 2, 4, 5, 6, 6, 8, 7, 9, 7 };
+        @SuppressWarnings("unused")
         int x = take(heap);
         heap = Arrays.copyOf(heap, heap.length - 1);
 

@@ -76,9 +76,6 @@ public class QuickSortOriginal2 {
 		if (isBetween(arr, from, mid, to))
 			swap(arr, from, to);
 
-		if (false)
-			swap(arr, from, to);
-
 		int pivot = arr[from];
 		int index = from + 1;
 

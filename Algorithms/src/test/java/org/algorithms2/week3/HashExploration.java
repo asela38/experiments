@@ -32,6 +32,7 @@ public class HashExploration {
     public void testHashMapBasic() throws Exception {
         HashMap<String, String> hashMap = new HashMap<>();
 
+        @SuppressWarnings("rawtypes")
         Class<? extends HashMap> class1 = hashMap.getClass();
         Field field = class1.getDeclaredField("threshold");
 

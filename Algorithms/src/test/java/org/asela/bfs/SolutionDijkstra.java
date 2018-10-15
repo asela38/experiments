@@ -66,7 +66,8 @@ public class SolutionDijkstra {
 		BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
 
 		int index = 0;
-		List<String> list = new BufferedReader(new FileReader(file)).lines().collect(Collectors.toList());
+        @SuppressWarnings("resource")
+        List<String> list = new BufferedReader(new FileReader(file)).lines().collect(Collectors.toList());
 		// List<String> list = new BufferedReader(new
 		// InputStreamReader(System.in)).lines().collect(Collectors.toList());
 		int t = Integer.parseInt(list.get(index++));

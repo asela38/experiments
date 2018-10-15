@@ -7,17 +7,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import org.junit.Test;
 
 public class AllPathSortest {
-    private static final Logger LOGGER             = Logger.getAnonymousLogger();
 
     private static final String TEST_FILE_LOCATION = "C:\\Users\\asela.illayapparachc\\git\\stanford-algs\\testCases\\course4\\assignment1AllPairsShortestPath\\";
     private static final String INPUT_FILE         = "input_random_";
     private static final String _1_2_FILE          = TEST_FILE_LOCATION + INPUT_FILE + "1_2.txt";
+    @SuppressWarnings("unused")
     private static final String JOB_FILE           = "C:\\Asela\\mydocs\\Coursera\\knapsack1.txt";
+    @SuppressWarnings("unused")
     private static final String JOB_FILE2          = "C:\\Asela\\mydocs\\Coursera\\knapsack_big.txt";
 
     @Test

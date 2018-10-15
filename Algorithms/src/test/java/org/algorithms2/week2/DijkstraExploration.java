@@ -33,7 +33,8 @@ public class DijkstraExploration {
 			processed.put(v, Boolean.TRUE);
 		}
 
-		public void setShortestPath(int v, int distance) {
+        @SuppressWarnings("unused")
+        public void setShortestPath(int v, int distance) {
 			shortestPath.put(v, distance);
 		}
 	}

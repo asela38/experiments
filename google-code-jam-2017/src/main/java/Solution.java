@@ -21,6 +21,7 @@ public class Solution {
             int t = scanner.nextInt();
             for (int k = 1; k <= t; k++) {
                 int r = scanner.nextInt();
+                @SuppressWarnings("unused")
                 int c = scanner.nextInt();
                 String[] grid = new String[r];
                 String prev = null;

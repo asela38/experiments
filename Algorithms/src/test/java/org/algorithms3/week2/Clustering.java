@@ -12,13 +12,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 import org.junit.Test;
 
 public class Clustering {
-
-    private static final Logger LOGGER             = Logger.getAnonymousLogger();
 
     private static final String TEST_FILE_LOCATION = "C:\\Users\\asela.illayapparachc\\git\\stanford-algs\\testCases\\course3\\assignment2Clustering\\question1\\";
     private static final String INPUT_FILE         = "input_completeRandom_";

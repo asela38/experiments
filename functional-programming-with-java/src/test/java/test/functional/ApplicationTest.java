@@ -1,5 +1,7 @@
 package test.functional;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -9,37 +11,41 @@ import org.junit.Test;
 
 public class ApplicationTest {
 
-	@Test
-	public void trivial() throws Exception {
-		System.out.println("Hello, World");
-	}
+    @Test
+    public void trivial() throws Exception {
+        System.out.println("Hello, World");
+    }
 
-	@Test
-	public void testName() throws Exception {
-		Function<Integer, Function<Integer, Integer>> add = a -> b -> a + b;
+    @Test
+    public void testName() throws Exception {
+        Function<Integer, Function<Integer, Integer>> add = a -> b -> a + b;
 
-		Function<Integer, Integer> add6 = add.apply(6);
-		Function<Integer, Integer> add5 = add.apply(5);
+        Function<Integer, Integer> add6 = add.apply(6);
+        Function<Integer, Integer> add5 = add.apply(5);
 
-		Predicate<Integer> is5 = i -> i == 5;
+        Predicate<Integer> is5 = i -> i == 5;
+        Function<Integer, Boolean> _is5 = i -> i == 5;
 
-		Consumer<String> print = s -> System.out.println(s);
+        assertEquals(is5.test(5), _is5.apply(5));
 
-		Consumer<String> _print = System.out::println;
+        Consumer<String> print = s -> System.out.println(s);
 
-		Supplier<String> supplyHello = () -> "Hello";
+        Consumer<String> _print = System.out::println;
+        _print.accept("Hello");
 
-		Supplier<String> createIntArray = String::new;
+        Supplier<String> supplyHello = () -> "Hello";
 
-		print.accept(supplyHello.get());
+        Supplier<String> createIntArray = String::new;
+        String string = createIntArray.get();
+        System.out.println(string);
 
-		Function<Integer, Boolean> _is5 = i -> i == 5;
+        print.accept(supplyHello.get());
 
-		Function<Integer, Integer> add11 = add6.compose(add5);
+        Function<Integer, Integer> add11 = add6.compose(add5);
 
-		System.out.println(add11.apply(19));
-		System.out.println(add11.apply(119));
+        System.out.println(add11.apply(19));
+        System.out.println(add11.apply(119));
 
-	}
+    }
 
 }

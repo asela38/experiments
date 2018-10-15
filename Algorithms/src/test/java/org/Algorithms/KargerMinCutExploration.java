@@ -74,7 +74,8 @@ public class KargerMinCutExploration {
 		}).summaryStatistics());
 	}
 
-	private void firstAttempt_FailedSinceExponentialGrowth(Map<Integer, List<Integer>> map, int n) {
+    @SuppressWarnings("unused")
+    private void firstAttempt_FailedSinceExponentialGrowth(Map<Integer, List<Integer>> map, int n) {
 		Set<Integer> rSet = new HashSet<>();
 
 		for (int i = 1; i <= n - 2; i++) {

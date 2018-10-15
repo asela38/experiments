@@ -40,8 +40,8 @@ public class PairSumAlgorithmCheck {
             }
             break;
         case HASH_SET_BASED_SOLUTION:
-            for (int i = 1000; i < N / 2; i += 1000) {
-                
+            for (int i = 1000; i < N / 2;) {
+
                 StopWatch watch = StopWatch.createStarted();
                 int ans = hashSetBasedSolution(i);
                 watch.stop();

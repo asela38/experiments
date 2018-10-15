@@ -61,7 +61,7 @@ public class DfsExploration {
         edges.put(4, Arrays.asList(2, 3));
         return edges;
     }
-    
+
     /*
      *        (0)---(1)---(3)
      *          \         / \
@@ -80,14 +80,13 @@ public class DfsExploration {
         System.out.println("      (2)--------(4)");
 
         Graph edges = new Graph();
-        edges.put(0, Arrays.asList(1,2));
+        edges.put(0, Arrays.asList(1, 2));
         edges.put(1, Arrays.asList(3));
         edges.put(2, Arrays.asList(3, 4));
         edges.put(3, Arrays.asList(4));
         edges.put(4, Arrays.asList());
         return edges;
     }
-
 
     /*
      *        (0)---(1)---(3)
@@ -142,6 +141,8 @@ public class DfsExploration {
     }
 
     public class Graph extends HashMap<Integer, List<Integer>> {
+
+        private static final long serialVersionUID = 9000771940489277884L;
     }
 
     @Test
@@ -179,11 +180,11 @@ public class DfsExploration {
         int[] order = new int[graph.size()];
         AtomicInteger c = new AtomicInteger(graph.size());
         for (int i = 0; i < graph.size(); i++) {
-            if(!visited[i]) {
+            if (!visited[i]) {
                 dfs(graph, i, visited, c, order);
             }
         }
-        
+
         System.out.println(" F Visited : " + Arrays.toString(visited));
         System.out.println(" F Order   : " + Arrays.toString(order));
 

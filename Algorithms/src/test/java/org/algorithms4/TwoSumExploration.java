@@ -29,7 +29,8 @@ public class TwoSumExploration {
 	// Prime number above 1M is 1_000_003
 	private static class HTable<K, V> {
 		private static final int magic_number = 1_000_003;
-		Node<K, V>[] table = new Node[magic_number];
+        @SuppressWarnings("unchecked")
+        Node<K, V>[]             table        = new Node[magic_number];
 
 		public void put(K k, V v) {
 			int key = Math.abs(k.hashCode()) % magic_number;
@@ -43,7 +44,8 @@ public class TwoSumExploration {
 			}
 		}
 
-		public boolean contains(K value) {
+        @SuppressWarnings("unlikely-arg-type")
+        public boolean contains(K value) {
 			int key = Math.abs(value.hashCode()) % magic_number;
 			if (table[key] == null) {
 				return false;
@@ -61,7 +63,8 @@ public class TwoSumExploration {
 
 		}
 
-		public V get(K value) {
+        @SuppressWarnings("unlikely-arg-type")
+        public V get(K value) {
 			int key = Math.abs(value.hashCode()) % magic_number;
 			if (table[key] == null) {
 				return null;
@@ -79,9 +82,7 @@ public class TwoSumExploration {
 
 		}
 
-		public void clean() {
-			Arrays.fill(table, null);
-		}
+
 
 		public void printUsage() {
 			System.out.printf("[%s->%s]%n", table.length, Arrays.stream(table).filter(Objects::nonNull).count());
@@ -89,7 +90,8 @@ public class TwoSumExploration {
 
 		private static class Node<K, V> {
 			V value;
-			K key;
+            @SuppressWarnings("unused")
+            K          key;
 			Node<K, V> next;
 
 			public Node(K k, V v) {

@@ -93,6 +93,7 @@ public class GradeSchoolMultiplication {
     
     
     //karatsuba Multiplication
+    @SuppressWarnings("unused")
     private String kMultiply(String number1, String number2) {
         
         int maxLength = Math.max(number1.length(), number2.length());

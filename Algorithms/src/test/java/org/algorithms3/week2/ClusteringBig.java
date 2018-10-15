@@ -8,21 +8,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.logging.Logger;
 
 import org.junit.Test;
 
 public class ClusteringBig {
 
-    private static final Logger LOGGER             = Logger.getAnonymousLogger();
 
     private static final String TEST_FILE_LOCATION = "C:\\Users\\asela.illayapparachc\\git\\stanford-algs\\testCases\\course3\\assignment2Clustering\\question2\\";
     private static final String INPUT_FILE         = "input_random_";
     private static final String _1_4_14_FILE       = TEST_FILE_LOCATION + INPUT_FILE + "1_4_14.txt";
+    @SuppressWarnings("unused")
     private static final String _5_4_4_FILE       = TEST_FILE_LOCATION + INPUT_FILE + "5_4_4.txt";
+    @SuppressWarnings("unused")
     private static final String _3_4_8_FILE       = TEST_FILE_LOCATION + INPUT_FILE + "3_4_8.txt";
     private static final String JOB_FILE           = "C:\\Asela\\mydocs\\Coursera\\clustering_big.txt";
 
@@ -66,6 +64,7 @@ public class ClusteringBig {
     private long process(String file) throws FileNotFoundException {
         try (Scanner scanner = new Scanner(new File(file))) {
             int n = scanner.nextInt();
+            @SuppressWarnings("unused")
             int b = scanner.nextInt();
             scanner.nextLine();
             int[] parents = new int[n];
@@ -92,9 +91,7 @@ public class ClusteringBig {
             }
             
             //Arrays.stream(node).mapToObj(Integer::toBinaryString).forEach(System.out::println);
-            Set<Integer> set = new HashSet<>();
-            
-            
+
             return Arrays.stream(parents).parallel().map(i -> find(i, parents)).distinct().count();
         }
     }
