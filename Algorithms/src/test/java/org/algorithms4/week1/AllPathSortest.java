@@ -1,12 +1,14 @@
 package org.algorithms4.week1;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Scanner;
 
 import org.junit.Test;
 
@@ -33,7 +35,22 @@ public class AllPathSortest {
     }
 
     private String process(String file) throws FileNotFoundException {
-        return "NULL";
+        try (Scanner scanner = new Scanner(new File(file))) {
+            int V = scanner.nextInt();
+            int E = scanner.nextInt();
+
+            int[][] G = new int[E][3];
+            int[][] GP = new int[E + V][3];
+            for (int i = 0; i < E; i++)
+                for (int j = 0; j < 3; j++)
+                    GP[i][j] = G[i][j] = scanner.nextInt();
+
+            for (int i = E, j = 0; j < V; j++) {
+                GP[i++] = new int[] { V + 1, j + 1, 0 };
+            }
+
+            return "";
+        }
     }
 
     @Test
