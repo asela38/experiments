@@ -79,7 +79,8 @@ public class KnapSack {
             for (int i = 1; i <= n; i++) {
                 for (int j = 0; j <= W; j++) {
                     // System.out.printf("%s-%s-%s%n", i, j , s[i]);
-                    w[(i + 1) % 2][j] = Long.max(w[i % 2][j], (j - s[i]) > -1 ? (v[i] + w[i % 2][j - s[i]]) : 0);
+                    long[] previous = w[i % 2];
+					w[(i + 1) % 2][j] = Long.max(previous[j], (j - s[i]) > -1 ? (v[i] + previous[j - s[i]]) : 0);
                 }
             }
 
