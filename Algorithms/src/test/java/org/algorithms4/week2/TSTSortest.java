@@ -14,9 +14,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
@@ -59,7 +61,116 @@ public class TSTSortest {
 		System.out.println(process(_26_8_FILE)); // 2
 	}
 
-	private String process(String file) throws FileNotFoundException {
+    private String process(String file) throws FileNotFoundException {
+        try (Scanner scanner = new Scanner(new File(file))) {
+            int N = scanner.nextInt();
+            double[][] vertices = new double[N][2];
+            for (int i = 0; i < N; i++) {
+                vertices[i] = new double[] { scanner.nextDouble(), scanner.nextDouble(), 0 };
+            }
+
+            Map<String, double[]> map = new HashMap<>(1 << 22);
+            double[] arr = new double[N];
+            Arrays.fill(arr, Double.MAX_VALUE);
+            arr[0] = 0;
+            map.put(Arrays.toString(new int[] {}), arr);
+
+            // if (N < 24)
+            // return "0";
+            Map<Integer, Set<String>> subSetMap = getSubSetMap(N - 1);
+            Queue<Integer> queue = new LinkedList<>();
+            Map<Integer, Set<String>> mapSet = new HashMap<>();
+            for (int m = 2; m <= N; m++) {
+                mapSet.put(m, new HashSet<>());
+                if (mapSet.containsKey(m - 2)) {
+                    mapSet.get(m - 2).forEach(key -> map.remove(key));
+                }
+                // System.out.println(
+                // m + "=" + choose(N, m - 1) + " / " + map.size() + " / " + choose(N - 1, m -
+                // 1));
+
+
+                for (String pattern : subSetMap.get(m - 1)) {
+
+                    queue.clear();
+                    IntStream.range(1, 26).forEach(queue::add);
+                    int[] S = pattern.chars().map(i -> i - '0').map(i -> i * queue.poll()).filter(i -> i != 0)
+                            .toArray();
+
+                    // System.out.println(Arrays.toString(T));
+
+                    if (!mapSet.get(m).add(Arrays.toString(S))) {
+                        // zz--;
+                        continue;
+                    }
+                    // System.out.printf("%5s=%s%n", zz + 1, Arrays.toString(T));
+                    // System.out.println(Arrays.toString(S));
+                    for (int j : S) {
+                        String key = Arrays.toString(Arrays.stream(S).filter(s -> s != j).toArray());
+                        double[] x = map.get(key);
+                        if (x == null) {
+                            x = new double[N];
+                            Arrays.fill(x, Double.MAX_VALUE);
+                            map.put(Arrays.toString(S), x);
+                        }
+
+                        double min = x[0] + distance(vertices[j], vertices[0]);
+                        for (int k : S) {
+                            if (k != j) {
+                                min = Double.min(min, x[k] + distance(vertices[j], vertices[k]));
+                            }
+                        }
+
+                        double[] is = map.get(Arrays.toString(S));
+                        if (is == null) {
+                            is = new double[N];
+                            Arrays.fill(is, Double.MAX_VALUE);
+                            map.put(Arrays.toString(S), is);
+                        }
+
+                        is[j] = min;
+                    }
+                }
+            }
+
+            int[] S = IntStream.iterate(1, i -> i + 1).limit(N - 1).sorted().toArray();
+            double[] x = map.get(Arrays.toString(Arrays.stream(S).toArray()));
+            double min = Double.MAX_VALUE;
+            for (int k : S) {
+                min = Double.min(min, x[k] + distance(vertices[0], vertices[k]));
+            }
+
+            return Long.toString((long) min);
+        }
+    }
+
+    @Test
+    public void testString() throws Exception {
+
+        String s = "1110011001100111";
+        Queue<Integer> queue = new LinkedList<>();
+        IntStream.range(1, 25).forEach(queue::add);
+        Set<Integer> collect = s.chars().map(i -> i - '0').map(i -> i * queue.poll()).filter(i -> i != 0).boxed()
+                .collect(Collectors.toSet());
+        System.out.println(collect);
+    }
+
+    private Map<Integer, Set<String>> getSubSetMap(int pow) {
+        Map<Integer, Set<String>> map = new HashMap<>();
+        for (int i = 0; i < Math.pow(2, pow); i++) {
+            String bs = Integer.toBinaryString(i);
+            Integer bitCount = Integer.bitCount(i);
+            if (!map.containsKey(bitCount)) {
+                map.put(bitCount, new HashSet<>());
+            }
+
+            map.get(bitCount).add(String.format("%" + pow + "s", bs).replace(" ", "0"));
+        }
+        return map;
+    }
+
+    @SuppressWarnings("unused")
+    private String process0(String file) throws FileNotFoundException {
 		try (Scanner scanner = new Scanner(new File(file))) {
 			int N = scanner.nextInt();
 			double[][] vertices = new double[N][2];
