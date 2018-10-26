@@ -1,4 +1,4 @@
-package org.algorithms4.week2;
+package org.algorithms4.week4;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,17 +8,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.PriorityQueue;
 import java.util.Scanner;
 
 import org.junit.Test;
 
 import com.google.common.base.Stopwatch;
 
-public class TSTGreedyHuristics {
+public class TwoSat {
 
-    private static final String TEST_FILE_LOCATION = "/Users/asela.illayapparachc/git/stanford-algs/testCases/course4/assignment3TSPHeuristic/";
-    private static final String INPUT_FILE         = "input_simple_";
+    private static final String TEST_FILE_LOCATION = "/Users/asela.illayapparachc/git/stanford-algs/testCases/course4/assignment4TwoSat/";
+    private static final String INPUT_FILE         = "input_beaunus_";
     private static final String _1_2_FILE          = TEST_FILE_LOCATION + INPUT_FILE + "1_2.txt";
     private static final String _2_2_FILE          = TEST_FILE_LOCATION + INPUT_FILE + "2_2.txt";
     private static final String _12_8_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "12_8.txt";
@@ -53,43 +52,9 @@ public class TSTGreedyHuristics {
     private String process(String file) throws FileNotFoundException {
         try (Scanner scanner = new Scanner(new File(file))) {
             int N = scanner.nextInt();
-            double[][] vertices = new double[N][3];
-            PriorityQueue<double[]> minHeap = new PriorityQueue<>(
-                    (a, b) -> {
-                        int v = Double.compare(a[3], b[3]);
-                        return v == 0 ? Double.compare(a[0], b[0]) : v;
-                    });
-            for (int i = 0; i < N; i++) {
-                vertices[i] = new double[] { scanner.nextDouble(), scanner.nextDouble(), scanner.nextDouble(), 0 };
-                vertices[i][3] = distance(vertices[i], vertices[0]);
-                minHeap.add(vertices[i]);
-            }
 
-            double totalDistance = 0D;
-            double[] from = minHeap.poll();
-            while (!minHeap.isEmpty()) {
-                double[] to = minHeap.poll();
-                totalDistance += distance(from, to);
-                from = to;
-                double[][] all = minHeap.toArray(new double[0][0]);
-                minHeap.clear();
-                for (double[] ds : all) {
-                    ds[3] = distance(from, ds);
-                    minHeap.add(ds);
-                }
-            }
-
-            totalDistance += distance(from, vertices[0]);
-
-            return Long.toString((long) totalDistance);
+            return Long.toString((long) N);
         }
-    }
-
-    private double distance(double[] a, double[] b) {
-        // System.out.println(Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1],
-        // 2)));
-        return Math.sqrt(Math.pow(a[1] - b[1], 2) + Math.pow(a[2] - b[2], 2));
-
     }
 
     @Test

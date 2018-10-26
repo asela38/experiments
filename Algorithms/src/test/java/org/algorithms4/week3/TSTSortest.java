@@ -1,4 +1,4 @@
-package org.algorithms4.week2;
+package org.algorithms4.week3;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
