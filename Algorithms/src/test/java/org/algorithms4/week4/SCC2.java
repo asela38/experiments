@@ -7,30 +7,39 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 
 import com.google.common.base.Stopwatch;
 
-public class TwoSat {
+/** Run With -Xss129m
+ * 
+ * @author asela.illayapparachc */
+@SuppressWarnings("unused")
+public class SCC2 {
 
-    private static final String TEST_FILE_LOCATION = "/Users/asela.illayapparachc/git/stanford-algs/testCases/course4/assignment4TwoSat/";
-    private static final String INPUT_FILE         = "input_beaunus_";
-    private static final String _1_2_FILE          = TEST_FILE_LOCATION + INPUT_FILE + "1_2.txt";
+    private static final String TEST_FILE_LOCATION = "/Users/asela.illayapparachc/git/stanford-algs/testCases/course2/assignment1SCC/";
+    private static final String INPUT_FILE         = "input_mostlyCycles_";
+    private static final String _1_8_FILE          = TEST_FILE_LOCATION + INPUT_FILE + "1_8.txt";
     private static final String _2_2_FILE          = TEST_FILE_LOCATION + INPUT_FILE + "2_2.txt";
     private static final String _12_8_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "12_8.txt";
     private static final String _19_6_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "19_6.txt";
     private static final String _26_8_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "26_8.txt";
     private static final String _32_256_FILE       = TEST_FILE_LOCATION + INPUT_FILE + "32_256.txt";
     private static final String _38_1024_FILE      = TEST_FILE_LOCATION + INPUT_FILE + "38_1024.txt";
-    @SuppressWarnings("unused")
     private static final String JOB_FILE1          = "/Users/asela.illayapparachc/Desktop/code/nn.txt";
 
     @Test
     public void testFile() throws Exception {
-        try (BufferedReader reader = new BufferedReader(new FileReader(_1_2_FILE))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(_1_8_FILE))) {
             reader.lines().forEach(System.out::println);
         }
     }
@@ -44,15 +53,55 @@ public class TwoSat {
 
     @Test
     public void trivial() throws Exception {
-        System.out.println(process(_1_2_FILE)); // 0
+        System.out.println(process(_1_8_FILE)); // 19
     }
 
     private String process(String file) throws FileNotFoundException {
         try (Scanner scanner = new Scanner(new File(file))) {
-            int N = scanner.nextInt();
+            Map<Integer, Set<Integer>> map = new HashMap<>();
+            while (scanner.hasNextInt()) {
+                int u = scanner.nextInt(), v = scanner.nextInt();
+                if (!map.containsKey(u))
+                    map.put(u, new HashSet<>());
+                if (!map.containsKey(v))
+                    map.put(v, new HashSet<>());
+                map.get(u).add(v);
+                map.get(v).add(u);
+            }
 
-            return Long.toString((long) N);
+            Map<Integer, Integer> leader = getleader(map);
+
+            Map<Integer, Long> sum = leader.values().stream()
+                    .collect(Collectors.groupingBy(i -> i, Collectors.counting()));
+            return Stream.concat(sum.values().stream(), Stream.of(0, 0, 0, 0, 0)).mapToInt(Number::intValue)
+                    .map(i -> -i)
+                    .sorted().limit(5)
+                    .map(i -> -i)
+                    .mapToObj(Objects::toString).collect(Collectors.joining(","));
         }
+    }
+
+    Map<Integer, Integer> getleader(Map<Integer, Set<Integer>> map) {
+        Set<Integer> explored = new HashSet<>();
+        Map<Integer, Integer> leader = new HashMap<>();
+        for (Integer i : map.keySet()) {
+            if (!explored.contains(i)) {
+                dfs(map, i, i, explored, leader);
+            }
+        }
+        return leader;
+    }
+
+    private void dfs(Map<Integer, Set<Integer>> map, Integer i, Integer s,
+            Set<Integer> explored, Map<Integer, Integer> leader) {
+        explored.add(i);
+        leader.put(i, s);
+        for (Integer w : map.get(i)) {
+            if (!explored.contains(w)) {
+                dfs(map, w, s, explored, leader);
+            }
+        }
+
     }
 
     @Test
@@ -71,7 +120,7 @@ public class TwoSat {
                             e.printStackTrace();
                         }
                         String result = null;
-                        System.out.printf("Expected : %10s Calculated: %10s %6s File: %40s %s %3s %n", output,
+                        System.out.printf("Expected : %30s Calculated: %30s %6s File: %40s %s %3s %n", output,
                                 result = process(f.getAbsolutePath()), Objects.equals(result, output), f.getName(),
                                 sw.elapsed().getSeconds(), "s");
                     } catch (FileNotFoundException e) {

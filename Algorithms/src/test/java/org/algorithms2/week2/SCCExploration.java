@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-public class SSCExploration {
+public class SCCExploration {
 
 	private static class Node {
 		int label;
