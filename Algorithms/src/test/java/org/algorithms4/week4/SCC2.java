@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -96,7 +97,7 @@ public class SCC2 {
             Set<Integer> explored, Map<Integer, Integer> leader) {
         explored.add(i);
         leader.put(i, s);
-        for (Integer w : map.get(i)) {
+        for (Integer w : map.getOrDefault(i, Collections.emptySet())) {
             if (!explored.contains(w)) {
                 dfs(map, w, s, explored, leader);
             }
