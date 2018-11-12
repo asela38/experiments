@@ -27,14 +27,19 @@ public class TwoSat {
     private static final String INPUT_FILE         = "input_beaunus_";
     private static final String _1_2_FILE          = TEST_FILE_LOCATION + INPUT_FILE + "1_2.txt";
     private static final String _2_2_FILE          = TEST_FILE_LOCATION + INPUT_FILE + "2_2.txt";
-    private static final String _4_4_FILE          = TEST_FILE_LOCATION + INPUT_FILE + "4_4.txt";
+    private static final String _3_4_FILE          = TEST_FILE_LOCATION + INPUT_FILE + "3_4.txt";
     private static final String _9_20_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "9_20.txt";
     private static final String _19_6_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "19_6.txt";
     private static final String _26_8_FILE         = TEST_FILE_LOCATION + INPUT_FILE + "26_8.txt";
     private static final String _32_256_FILE       = TEST_FILE_LOCATION + INPUT_FILE + "32_256.txt";
     private static final String _38_1024_FILE      = TEST_FILE_LOCATION + INPUT_FILE + "38_1024.txt";
     @SuppressWarnings("unused")
-    private static final String JOB_FILE1          = "/Users/asela.illayapparachc/Desktop/code/nn.txt";
+    private static final String JOB_FILE1          = "/Users/asela.illayapparachc/Desktop/code/2sat1.txt";
+    private static final String JOB_FILE2          = "/Users/asela.illayapparachc/Desktop/code/2sat2.txt";
+    private static final String JOB_FILE3          = "/Users/asela.illayapparachc/Desktop/code/2sat3.txt";
+    private static final String JOB_FILE4          = "/Users/asela.illayapparachc/Desktop/code/2sat4.txt";
+    private static final String JOB_FILE5          = "/Users/asela.illayapparachc/Desktop/code/2sat5.txt";
+    private static final String JOB_FILE6          = "/Users/asela.illayapparachc/Desktop/code/2sat6.txt";
 
     @Test
     public void testFile() throws Exception {
@@ -47,12 +52,17 @@ public class TwoSat {
     public void job() throws Exception {
 
         System.out.println(process(JOB_FILE1)); // -1947
+        System.out.println(process(JOB_FILE2)); // -1947
+        System.out.println(process(JOB_FILE3)); // -1947
+        System.out.println(process(JOB_FILE4)); // -1947
+        System.out.println(process(JOB_FILE5)); // -1947
+        System.out.println(process(JOB_FILE6)); // -1947
 
     }
 
     @Test
     public void trivial() throws Exception {
-        System.out.println(process(_9_20_FILE)); // 0
+        System.out.println(process(_3_4_FILE)); // 0
     }
 
     private String process(String file) throws FileNotFoundException {
@@ -82,7 +92,7 @@ public class TwoSat {
             if (map.size() == 0)
                 return "0";
 
-            Map<Integer, Integer> leader = new SCC2().getleader(map);
+            Map<Integer, Integer> leader = new SCC().getLeaderMap(map);
 
             // System.out.println(leader);
 

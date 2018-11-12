@@ -7,9 +7,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.Set;
@@ -67,18 +69,7 @@ public class SCC {
                 map.get(v).add(u);
             }
 
-            AtomicInteger t = new AtomicInteger(0);
-            Integer s = null;
-
-            Set<Integer> explored = new HashSet<>();
-            Map<Integer, Integer> finish = new HashMap<>();
-            Map<Integer, Integer> leader = new HashMap<>();
-            for (Integer i : map.keySet()) {
-                if (!explored.contains(i)) {
-                    s = i;
-                    dfs(map, i, s, t, finish, explored, leader);
-                }
-            }
+            Map<Integer, Integer> leader = getLeaderMap(map);
 
             Map<Integer, Long> sum = leader.values().stream()
                     .collect(Collectors.groupingBy(i -> i, Collectors.counting()));
@@ -92,11 +83,57 @@ public class SCC {
         }
     }
 
+    Map<Integer, Integer> getLeaderMap(Map<Integer, Set<Integer>> map) {
+        Map<Integer, Set<Integer>> reverseMap = reverse(map);
+
+        AtomicInteger t = new AtomicInteger(0);
+        Integer s = null;
+
+        Set<Integer> explored = new HashSet<>();
+        Map<Integer, Integer> finish = new HashMap<>();
+        Map<Integer, Integer> leader = new HashMap<>();
+        // System.out.println(map.keySet());
+        for (Integer i : map.keySet()) {
+            if (!explored.contains(i)) {
+                s = i;
+                dfs(reverseMap, i, s, t, finish, explored, leader);
+            }
+        }
+        Integer[] arr = finish.entrySet().stream().sorted((b, a) -> a.getValue().compareTo(b.getValue()))
+                .map(e -> e.getKey()).toArray(Integer[]::new);
+        // System.out.println(Arrays.toString(arr));
+        explored = new HashSet<>();
+        finish = new HashMap<>();
+        leader = new HashMap<>();
+        for (Integer i : arr) {
+            if (!explored.contains(i)) {
+                s = i;
+                dfs(map, i, s, t, finish, explored, leader);
+            }
+        }
+        return leader;
+    }
+
+    private Map<Integer, Set<Integer>> reverse(Map<Integer, Set<Integer>> map) {
+        Map<Integer, Set<Integer>> reverse = new HashMap<>();
+        for (Entry<Integer, Set<Integer>> entry : map.entrySet()) {
+            Set<Integer> value = entry.getValue();
+            for (Integer integer : value) {
+                if (!reverse.containsKey(integer)) {
+                    reverse.put(integer, new HashSet<>());
+                }
+                reverse.get(integer).add(entry.getKey());
+            }
+        }
+
+        return reverse;
+    }
+
     private void dfs(Map<Integer, Set<Integer>> map, Integer i, Integer s, AtomicInteger t,
             Map<Integer, Integer> finish, Set<Integer> explored, Map<Integer, Integer> leader) {
         explored.add(i);
         leader.put(i, s);
-        for (Integer w : map.get(i)) {
+        for (Integer w : map.getOrDefault(i, Collections.emptySet())) {
             if (!explored.contains(w)) {
                 dfs(map, w, s, t, finish, explored, leader);
             }
@@ -129,7 +166,5 @@ public class SCC {
                     }
                 });
     }
-
-
 
 }
