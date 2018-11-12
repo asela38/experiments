@@ -1,6 +1,7 @@
 package org.nand.to.tettris;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 import org.junit.Test;
@@ -10,9 +11,15 @@ public class HackAssemblerTest {
     @Test
     public void verify_execution() throws Exception {
         System.out.printf("File loaded form : %s%n", new File(".").getAbsolutePath());
+        // executeAssembler("Add.asm");
+        executeAssembler("Max.asm");
+
+    }
+
+    private void executeAssembler(String asm) throws IOException, InterruptedException {
         Process process = Runtime.getRuntime()
                 .exec(String.format(
-                        "java -cp target/classes org.nand.to.tettris.HackAssembler target/test-classes/%s", "Add.asm"));
+                        "java -cp target/classes org.nand.to.tettris.HackAssembler target/test-classes/%s", asm));
         System.out.printf("Wait for the process to complete. Result: %s%n", process.waitFor());
 
         System.out.println("--Inputstream:");
@@ -30,6 +37,5 @@ public class HackAssemblerTest {
             }
 
         }
-
     }
 }
