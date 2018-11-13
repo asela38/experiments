@@ -23,9 +23,12 @@ public class HackAssemblerTest {
         System.out.printf("Wait for the process to complete. Result: %s%n", process.waitFor());
 
         System.out.println("--Inputstream:");
-        try (Scanner scanner = new Scanner(process.getInputStream())) {
+        try (Scanner scanner = new Scanner(process.getInputStream());) {
             while (scanner.hasNextLine()) {
+                
                 System.out.println(scanner.nextLine());
+
+
             }
 
         }
