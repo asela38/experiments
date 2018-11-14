@@ -28,6 +28,7 @@ public class ASumRecursive extends RecursiveAction {
             int mid = (LO + HI) >> 1;
             ASumRecursive lowHalf = new ASumRecursive(A, LO, mid), highHalf = new ASumRecursive(A, mid, HI);
             invokeAll(lowHalf, highHalf);
+            // lowHalf.fo
             SUM += lowHalf.getSUM() + highHalf.getSUM();
         }
 
