@@ -1,4 +1,4 @@
-package org.parallel.programming;
+package com.asela.programming.parallel;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -8,6 +8,9 @@ import java.util.concurrent.RecursiveAction;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
+
+import com.asela.programming.parallel.ASum;
+import com.asela.programming.parallel.ASumRecursive;
 
 import edu.rice.pcdp.PCDP;
 
