@@ -297,6 +297,10 @@ public class CodeWriter implements Closeable {
 		writer.write(String.format("%n// %s %n", comment));
 	}
 
+	public void writeLabel(String label) throws IOException {
+		writer.write(String.format("(%s)", label));
+	}
+
 	/**
 	 * @throws IOException
 	 * @see java.io.Writer#close()

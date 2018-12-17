@@ -18,6 +18,7 @@ public class Parser implements Closeable {
 	private Pattern popOpPattern = Pattern.compile("pop (\\S+) (\\d+)");
 	private Pattern pushOpPattern = Pattern.compile("push (\\S+) (\\d+)");
 	private Pattern arithmeticOpPattern = Pattern.compile("(\\S+)");
+	private Pattern labelOpPattern = Pattern.compile("label (\\S+)");
 
 	public Parser(String fileName) throws FileNotFoundException {
 		File file = new File(fileName);
@@ -48,10 +49,11 @@ public class Parser implements Closeable {
 	public boolean advance() {
 		if (hasMoreCommands()) {
 			current = scanner.nextLine();
-
+			System.out.printf("[%s]%n", current);
 			Matcher popOpMatcher = popOpPattern.matcher(current);
 			Matcher pushOpMatcher = pushOpPattern.matcher(current);
 			Matcher arithmeticOpMatcher = arithmeticOpPattern.matcher(current);
+			Matcher labelOpMatcher = labelOpPattern.matcher(current);
 
 			if (arithmeticOpMatcher.matches()) {
 				commandType = CommandType.C_ARITHMETIC;
@@ -64,6 +66,9 @@ public class Parser implements Closeable {
 				commandType = CommandType.C_PUSH;
 				arg1 = pushOpMatcher.group(1);
 				arg2 = Integer.parseInt(pushOpMatcher.group(2));
+			} else if (labelOpMatcher.matches()) {
+				commandType = CommandType.C_LABEL;
+				arg1 = labelOpMatcher.group(1);
 			} else {
 				System.out.println("Non matching Line: " + current);
 				advance();

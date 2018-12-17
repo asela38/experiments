@@ -9,6 +9,13 @@ import org.junit.Test;
 public class HackVMTranslatorTest {
 
 	@Test
+	public void verify_execution_loop() throws Exception {
+		System.out.printf("File loaded form : %s%n", new File(".").getAbsolutePath());
+		executeAssembler("BasicLoop.vm");
+
+	}
+
+	@Test
 	public void verify_execution() throws Exception {
 		System.out.printf("File loaded form : %s%n", new File(".").getAbsolutePath());
 		executeAssembler("BasicTest.vm");
