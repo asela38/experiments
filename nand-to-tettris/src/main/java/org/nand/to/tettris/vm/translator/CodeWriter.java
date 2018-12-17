@@ -35,7 +35,7 @@ public class CodeWriter implements Closeable {
 	}
 
 	private void wl(String line, Object... args) throws IOException {
-        writer.write("\t" + String.format(line + "%n", args));
+		writer.write("\t" + String.format(line + "%n", args));
 	}
 
 	public void writeArithmetic(String command) throws IOException {
@@ -310,15 +310,28 @@ public class CodeWriter implements Closeable {
 		writer.close();
 	}
 
-    public void writeIf(String label) throws Exception {
-        popD();
-        wl("@%s", label);
-        wl("D;JNE");
-    }
+	public void writeIf(String label) throws Exception {
+		popD();
+		wl("@%s", label);
+		wl("D;JNE");
+	}
 
-    public void writeGoto(String label) throws Exception {
-        wl("@%s", label);
-        wl("0;JMP");
-    }
+	public void writeGoto(String label) throws Exception {
+		wl("@%s", label);
+		wl("0;JMP");
+	}
+
+	public void writeCall(String arg1, int arg2) throws Exception {
+		writeComment("call for " + arg1);
+	}
+
+	public void writeFunction(String arg1, int arg2) throws Exception {
+		writeLabel(arg1);
+
+	}
+
+	public void writeReturn() throws Exception {
+		writeComment("return");
+	}
 
 }
