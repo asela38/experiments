@@ -15,11 +15,21 @@ public class Parser implements Closeable {
     private String      arg1;
     private int         arg2;
     private CommandType commandType;
-    private Pattern     popOpPattern        = Pattern.compile("pop (\\S+) (\\d+)");
-    private Pattern     pushOpPattern       = Pattern.compile("push (\\S+) (\\d+)");
-    private Pattern     arithmeticOpPattern = Pattern.compile("(\\S+)");
-    private Pattern     labelOpPattern      = Pattern.compile("label (\\S+)");
-    private Pattern     ifGotoOpPattern     = Pattern.compile("if-goto (\\S+)");
+
+    enum OpPattern {
+        POP("pop (\\S+) (\\d+)"), PUSH("push (\\S+) (\\d+)"), ARITHMATIC("^(\\S+)$"), LABEL("label (\\S+)"), IF(
+                "if-goto (\\S+)"), GOTO("goto (\\S+)");
+
+        private Pattern pattern;
+
+        private OpPattern(String pattern) {
+            this.pattern = Pattern.compile(pattern);
+        }
+
+        public Matcher getMatcher(String string) {
+            return pattern.matcher(string);
+        }
+    }
 
     public Parser(String fileName) throws FileNotFoundException {
         File file = new File(fileName);
@@ -54,11 +64,12 @@ public class Parser implements Closeable {
             // Clean the line (remove comments and trim the line)
             current = current.replaceAll("//.*$", " ").trim();
 
-            Matcher popOpMatcher = popOpPattern.matcher(current);
-            Matcher pushOpMatcher = pushOpPattern.matcher(current);
-            Matcher arithmeticOpMatcher = arithmeticOpPattern.matcher(current);
-            Matcher labelOpMatcher = labelOpPattern.matcher(current);
-            Matcher ifGotoOpMatcher = ifGotoOpPattern.matcher(current);
+            Matcher popOpMatcher = OpPattern.POP.getMatcher(current);
+            Matcher pushOpMatcher = OpPattern.PUSH.getMatcher(current);
+            Matcher arithmeticOpMatcher = OpPattern.ARITHMATIC.getMatcher(current);
+            Matcher labelOpMatcher = OpPattern.LABEL.getMatcher(current);
+            Matcher ifGotoOpMatcher = OpPattern.IF.getMatcher(current);
+            Matcher gotoOpMatcher = OpPattern.GOTO.getMatcher(current);
 
             if (current.isEmpty()) {
                 System.out.println("Empty Line" + current);
@@ -80,6 +91,9 @@ public class Parser implements Closeable {
             } else if (ifGotoOpMatcher.matches()) {
                 commandType = CommandType.C_IF;
                 arg1 = ifGotoOpMatcher.group(1);
+            } else if (gotoOpMatcher.matches()) {
+                commandType = CommandType.C_GOTO;
+                arg1 = gotoOpMatcher.group(1);
             } else {
                 System.out.println("Non matching Line: " + current);
                 advance();

@@ -30,6 +30,7 @@ public class Main {
 				case C_FUNCTION:
 					break;
 				case C_GOTO:
+                    writer.writeGoto(parser.arg1());
 					break;
 				case C_IF:
                     writer.writeIf(parser.arg1());

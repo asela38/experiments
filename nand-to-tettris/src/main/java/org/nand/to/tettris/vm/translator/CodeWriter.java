@@ -316,4 +316,9 @@ public class CodeWriter implements Closeable {
         wl("D;JNE");
     }
 
+    public void writeGoto(String label) throws Exception {
+        wl("@%s", label);
+        wl("0;JMP");
+    }
+
 }
