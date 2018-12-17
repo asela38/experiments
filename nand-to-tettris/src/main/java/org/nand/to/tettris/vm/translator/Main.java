@@ -32,8 +32,10 @@ public class Main {
 				case C_GOTO:
 					break;
 				case C_IF:
+                    writer.writeIf(parser.arg1());
 					break;
 				case C_LABEL:
+                    writer.writeLabel(parser.arg1());
 					break;
 				case C_POP:
 					writer.writePop(parser.arg1(), parser.arg2());

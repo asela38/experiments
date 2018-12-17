@@ -11,7 +11,8 @@ public class HackVMTranslatorTest {
 	@Test
 	public void verify_execution_loop() throws Exception {
 		System.out.printf("File loaded form : %s%n", new File(".").getAbsolutePath());
-		executeAssembler("BasicLoop.vm");
+        executeMainMethod(
+                "C:\\Users\\asela.illayapparachc\\git\\experiments\\nand-to-tettris\\src\\test\\resources\\BasicLoop.vm");
 
 	}
 
@@ -25,6 +26,10 @@ public class HackVMTranslatorTest {
 		executeAssembler("StackTest.vm");
 
 	}
+
+    private void executeMainMethod(String... files) {
+        Main.main(files);
+    }
 
 	private void executeAssembler(String file) throws IOException, InterruptedException {
 		Process process = Runtime.getRuntime().exec(String
