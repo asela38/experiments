@@ -85,6 +85,9 @@ public class Parser implements Closeable {
 			if (current.isEmpty()) {
 				System.out.println("Empty Line" + current);
 				advance();
+			} else if (returnOpMatcher.matches()) {
+				commandType = CommandType.C_RETURN;
+				setArgs(returnOpMatcher);
 			} else if (arithmeticOpMatcher.matches()) {
 				commandType = CommandType.C_ARITHMETIC;
 				setArgs(arithmeticOpMatcher);
@@ -109,9 +112,6 @@ public class Parser implements Closeable {
 			} else if (functionOpMatcher.matches()) {
 				commandType = CommandType.C_FUNCTION;
 				setArgs(functionOpMatcher);
-			} else if (returnOpMatcher.matches()) {
-				commandType = CommandType.C_RETURN;
-				setArgs(returnOpMatcher);
 			} else {
 				System.out.println("Non matching Line: " + current);
 				advance();
@@ -122,7 +122,8 @@ public class Parser implements Closeable {
 	}
 
 	private void setArgs(Matcher matcher) {
-		arg1 = matcher.group(1);
+		if (matcher.groupCount() > 0)
+			arg1 = matcher.group(1);
 		if (matcher.groupCount() > 1)
 			arg2 = Integer.parseInt(matcher.group(2));
 	}
