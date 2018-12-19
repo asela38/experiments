@@ -442,4 +442,13 @@ public class CodeWriter implements Closeable {
 
     }
 
+    public void writeInit() throws Exception {
+        wl("@256");
+        wl("D=A");
+        wl("@SP");
+        wl("M=D");
+        writeCall("Sys.init", 0);
+
+    }
+
 }

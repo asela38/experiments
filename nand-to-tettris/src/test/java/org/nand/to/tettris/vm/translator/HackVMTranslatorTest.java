@@ -12,6 +12,13 @@ public class HackVMTranslatorTest {
     private static String BASE_PATH2 = "src/test/resources/";
 
     @Test
+    public void verify_execution_Fib() throws Exception {
+        System.out.printf("File loaded form : %s%n", new File(".").getAbsolutePath());
+        executeMainMethod(BASE_PATH2 + "Fib");
+
+    }
+
+    @Test
     public void verify_execution_nested_call() throws Exception {
         System.out.printf("File loaded form : %s%n", new File(".").getAbsolutePath());
         executeMainMethod(BASE_PATH2 + "Sys.vm");
