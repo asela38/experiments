@@ -324,7 +324,11 @@ public class CodeWriter implements Closeable {
 
         writeComment("call for " + arg1);
         String returnLabel = String.format("%s$ret.%d", fileName, returnCounter++);
-        pushAddressToStack(returnLabel);
+
+        wl("@%s", returnLabel);
+        wl("D=A");
+        pushD();
+
         pushAddressToStack("LCL");
         pushAddressToStack("ARG");
         pushAddressToStack("THIS");
@@ -377,7 +381,7 @@ public class CodeWriter implements Closeable {
         wl("@endFrame");
         wl("M=D");
 
-        // retAddr = *(endFrame -5)
+        // retAddr = *(endFrame - 5)
         wl("@5");
         wl("A=D-A");
         wl("D=M");
