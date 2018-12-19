@@ -40,28 +40,29 @@ public class Main {
         try (CodeWriter writer = new CodeWriter(String.format("%s.asm", args[0]))) {
 
             if (fileNames.length > 1) {
-            // // function Sys.init 0
-            // writer.writeFunction("Sys.init", 0);
-            // // push constant 4000 // test THIS and THAT context save
-            // writer.writePush("constant", 4000);
-            // // pop pointer 0
-            // writer.writePop("pointer", 0);
-            // // push constant 5000
-            // writer.writePush("constant", 5000);
-            // // pop pointer 1
-            // writer.writePop("pointer", 1);
-            // // call Sys.main 0
-            // writer.writeCall("Sys.main", 0);
-            // // pop temp 1
-            // writer.writePop("temp", 1);
-            // // label LOOP
-            // writer.writeLabel("LOOP");
-            // // goto LOOP
-            // writer.writeGoto("LOOP");
+                // // function Sys.init 0
+                // writer.writeFunction("Sys.init", 0);
+                // // push constant 4000 // test THIS and THAT context save
+                // writer.writePush("constant", 4000);
+                // // pop pointer 0
+                // writer.writePop("pointer", 0);
+                // // push constant 5000
+                // writer.writePush("constant", 5000);
+                // // pop pointer 1
+                // writer.writePop("pointer", 1);
+                // // call Sys.main 0
+                // writer.writeCall("Sys.main", 0);
+                // // pop temp 1
+                // writer.writePop("temp", 1);
+                // // label LOOP
+                // writer.writeLabel("LOOP");
+                // // goto LOOP
+                // writer.writeGoto("LOOP");
                 writer.writeInit();
             }
 
-            for (String fileName : fileNames)
+            for (String fileName : fileNames) {
+                writer.setSubFileName(fileName);
                 try (Parser parser = new Parser(
                         String.format("%s.vm", String.format("%s/%s", args[0], fileName.split("\\.")[0])))) {
                     writer.writeComment("File Name: " + fileName);
@@ -104,6 +105,7 @@ public class Main {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
         } catch (Exception e1) {
             e1.printStackTrace();
         }

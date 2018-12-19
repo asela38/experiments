@@ -21,6 +21,7 @@ public class CodeWriter implements Closeable {
     private static final String LOCAL         = "local";
     private Writer              writer;
     private String              fileName;
+    private String              subFileName   = "";
     Pattern                     filePattern   = Pattern.compile(".*([A-Za-z0-9]+).asm");
     private static int          compCounter   = 0;
     private static int          returnCounter = 0;
@@ -33,6 +34,10 @@ public class CodeWriter implements Closeable {
         File file = new File(fileName);
         System.out.printf("[%s] opens [%s] for write. n", this.getClass().getName(), file.getAbsolutePath());
         writer = new PrintWriter(file);
+    }
+
+    public void setSubFileName(String subFileName) {
+        this.subFileName = "." + subFileName;
     }
 
     private void wl(String line, Object... args) throws IOException {
@@ -177,7 +182,7 @@ public class CodeWriter implements Closeable {
             pushD();
             break;
         case STATIC:
-            wl(String.format("@%s.%d // *sp = %d", fileName, index, index));
+            wl(String.format("@%s.%d // *sp = %d", fileName + subFileName, index, index));
             wl("D=M");
 
             pushD();
@@ -224,7 +229,7 @@ public class CodeWriter implements Closeable {
 
             popD();
 
-            wl(String.format("@%s.%d", fileName, index));
+            wl(String.format("@%s.%d", fileName + subFileName, index));
             wl("M=D");
 
             break;
