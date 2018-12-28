@@ -1,8 +1,12 @@
 package org.nand.to.tettris.compiler.analyser;
 
-public class JackTokenizer {
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
 
-    public JackTokenizer(String inputFile) {
+public class JackTokenizer implements Closeable {
+
+    public JackTokenizer(File inputFile) {
 
     }
 
@@ -36,5 +40,11 @@ public class JackTokenizer {
 
     public String stringVal() {
         return null;
+    }
+
+    @Override
+    public void close() throws IOException {
+        // TODO Auto-generated method stub
+
     }
 }
