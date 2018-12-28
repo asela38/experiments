@@ -31,4 +31,9 @@ public class JackAnalyzerTest {
         assertFalse(JackAnalyzer.isExist());
     }
 
+    @Test
+    public void testArray() {
+        JackAnalyzer.main("./src/test/resources/ArrayTest");
+
+    }
 }
