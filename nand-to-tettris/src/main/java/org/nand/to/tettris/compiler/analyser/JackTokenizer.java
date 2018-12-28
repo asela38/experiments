@@ -20,6 +20,7 @@ public class JackTokenizer implements Closeable {
         String content = Files.lines(inputFile.toPath())
                 .map(l -> l.replaceAll("\\/\\/.*", ""))
                 .map(l -> l.replaceAll("^\\s*(?=\\S)", " "))
+                .map(l -> l.replaceAll("\\/\\*\\*.*\\*\\/", ""))
                 .filter(l -> !l.trim().isEmpty())
                 .collect(Collectors.joining(" "));
 
@@ -30,6 +31,10 @@ public class JackTokenizer implements Closeable {
 
     public boolean hasMoreTokens() {
         return current < chars.length;
+    }
+    
+    public void reset() {
+    	symbol = 0;
     }
 
     public void advance() {
@@ -68,22 +73,24 @@ public class JackTokenizer implements Closeable {
         case '"':
             tokenType = TokenType.STRING_CONST;
             readStringVal();
+            reset();
             break;
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-        case 9:
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
             tokenType = TokenType.INT_CONST;
             intVal = Integer.parseInt(readWord());
+            reset();
             break;
         default:
-
+        	reset();
             tokenType = TokenType.KEYWORD;
             String word = readWord();
             switch (word) {
