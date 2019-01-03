@@ -1,4 +1,4 @@
-package org.nand.to.tettris.compiler.analyser;
+package org.nand.to.tettris.vm.compiler;
 
 import java.io.File;
 import java.io.IOException;
