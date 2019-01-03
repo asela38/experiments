@@ -39,7 +39,7 @@ public class VMWriter implements Closeable {
 
     private PrintWriter writer;
 
-    public VMWriter(File vmFile) throws Exception {
+    public VMWriter(File vmFile) throws IOException {
         writer = new PrintWriter(vmFile);
     }
 

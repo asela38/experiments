@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JackAnalyzer {
+public class JackCompiler {
 
     public enum Patterns {
 
@@ -41,9 +41,8 @@ public class JackAnalyzer {
 
             if (isFile) {
 
-                File outFile = getOutFile(inFile);
                 File vmFile = getVmFile(inFile);
-                try (CompilationEngine compilationEngine = new CompilationEngine(inFile, outFile, vmFile)) {
+                try (CompilationEngine compilationEngine = new CompilationEngine(inFile, vmFile)) {
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -54,11 +53,10 @@ public class JackAnalyzer {
                             .filter(f -> Patterns.JACK_FILE.getMatcher(f.getFileName().toString()).matches())
                             .forEach(f -> {
 
-                                File outFile = getOutFile(f.toFile());
                                 File vmFile = getVmFile(f.toFile());
                                 try (
                                         CompilationEngine compilationEngine = new CompilationEngine(f.toFile(),
-                                                outFile, vmFile)) {
+                                                vmFile)) {
 
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -71,11 +69,6 @@ public class JackAnalyzer {
 
         }
 
-    }
-
-    private static File getOutFile(File inFile) {
-        return new File(inFile.getParentFile(),
-                inFile.getName().replaceAll(".*\\./", "").replaceAll("\\.jack", "") + ".xml");
     }
 
     private static File getVmFile(File inFile) {
