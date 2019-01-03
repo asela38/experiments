@@ -38,6 +38,7 @@ push argument 0
 push local 0 
 and 
 push constant 0 
+eq 
 not 
 not 
 if-goto IF_TRUE1 
@@ -68,6 +69,7 @@ return
 function Main.nextMask 0 
 push argument 0 
 push constant 0 
+eq 
 not 
 if-goto IF_TRUE2 
 push constant 1 

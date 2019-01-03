@@ -429,6 +429,9 @@ public class CompilationEngine implements Closeable {
             case "|":
                 vmWriter.writeArithmetic(Command.OR);
                 break;
+            case "=":
+                vmWriter.writeArithmetic(Command.EQ);
+                break;
             case "\"":
                 vmWriter.writeCall("Math.divide", 2);
                 break;

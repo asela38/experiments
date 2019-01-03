@@ -13,4 +13,9 @@ public class JackCompilerTest {
     public void testConvertToBin() {
         JackCompiler.main("./src/test/resources/project11/ConvertToBin");
     }
+    
+    @Test
+    public void testSquare() {
+        JackCompiler.main("./src/test/resources/project11/Square");
+    }
 }

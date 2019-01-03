@@ -2,7 +2,7 @@ package org.nand.to.tettris.vm.compiler;
 
 public enum Kind {
 
-    STATIC(KeyWord.STATIC), FIELD(KeyWord.STATIC), ARG(KeyWord.STATIC), VAR(KeyWord.STATIC), NONE(null);
+    STATIC(KeyWord.STATIC), FIELD(KeyWord.FIELD), ARG(null), VAR(KeyWord.VAR), NONE(null);
 
     private KeyWord keyWord;
 
