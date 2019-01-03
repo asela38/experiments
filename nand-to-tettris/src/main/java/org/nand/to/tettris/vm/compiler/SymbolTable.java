@@ -33,11 +33,20 @@ public class SymbolTable {
     }
 
     private Map<Scope, Map<Kind, Map<String, Map<String, Integer>>>> st          = new HashMap<>();
+    {
+        st.put(Scope.CLASS, new HashMap<>());
+        st.put(Scope.SUBROUTINE, new HashMap<>());
+
+    }
     private HashMap<String, String>                                  varsInScope = new HashMap<>();
 
     public void startSubroutine() {
-        st.get(Scope.SUBROUTINE).values().stream().flatMap(e -> e.values().stream())
-                .flatMap(e -> e.keySet().stream()).forEach(varsInScope::remove);
+        st.get(Scope.SUBROUTINE).values().stream()
+                .filter(e -> e.values().size() > 0)
+                .flatMap(e -> e.values().stream())
+                .filter(e -> e.keySet().size() > 0)
+                .flatMap(e -> e.keySet().stream())
+                .forEach(varsInScope::remove);
 
         st.put(Scope.SUBROUTINE, new HashMap<>());
     }

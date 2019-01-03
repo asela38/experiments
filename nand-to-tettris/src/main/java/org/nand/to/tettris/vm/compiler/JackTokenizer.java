@@ -20,6 +20,8 @@ public class JackTokenizer implements Closeable {
         String content = Files.lines(inputFile.toPath())
                 .map(l -> l.replaceAll("\\/\\/.*", ""))
                 .map(l -> l.replaceAll("^\\s*(?=\\S)", " "))
+                .map(l -> l.replaceAll("^\\s*\\*.*$", ""))
+                .map(l -> l.replaceAll("^\\s*\\/\\*\\*.*$", ""))
                 .map(l -> l.replaceAll("\\/\\*\\*.*\\*\\/", ""))
                 .filter(l -> !l.trim().isEmpty())
                 .collect(Collectors.joining(" "));

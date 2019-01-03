@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.nand.to.tettris.vm.compiler.VMWriter.Command;
 import org.nand.to.tettris.vm.compiler.VMWriter.Segment;
@@ -16,6 +18,8 @@ public class CompilationEngine implements Closeable {
     private VMWriter      vmWriter;
     private String        className;
     private SymbolTable   st;
+    private static int    whileCount = 0;
+    private static int    ifCount    = 0;
 
     public CompilationEngine(File inFile, File outFile, File vmFile) throws IOException {
         this(inFile, vmFile);
@@ -135,6 +139,7 @@ public class CompilationEngine implements Closeable {
             case FUNCTION:
             case METHOD:
             case CONSTRUCTOR:
+                st.startSubroutine();
                 compileSubroutineDec();
                 break;
             default:
@@ -144,21 +149,6 @@ public class CompilationEngine implements Closeable {
 
         symbolTag();
         closeTag("class");
-    }
-
-    public void compileClassVarDec() {
-        openTag("classVarDec");
-
-        keyWordTag();
-        keyOrIdTag();
-        identifierTag();
-        while (tokenizer.symbol() == ',') {
-            symbolTag();
-            identifierTag();
-        }
-        symbolTag();
-
-        closeTag("classVarDec");
     }
 
     private void keyOrIdTag() {
@@ -184,56 +174,109 @@ public class CompilationEngine implements Closeable {
         String routineName = tokenizer.identifier();
         identifierTag();
         symbolTag();
-        compileParameterList();
-        vmWriter.writeFunction(className + "." + routineName, 0);
+        int count = compileParameterList();
+
         symbolTag();
-        compileSubroutineBody();
+        openTag("subroutineBody");
+        symbolTag();
+        int countLocal = compileVarDec();
+        vmWriter.writeFunction(className + "." + routineName, countLocal);
+        compileStatements();
+        symbolTag();
+        closeTag("subroutineBody");
         closeTag("subroutineDec");
 
     }
 
-    public void compileParameterList() {
-        openTag("parameterList");
-        if (tokenizer.symbol() != ')') {
-            keyOrIdTag();
-            identifierTag();
-        }
-        while (tokenizer.symbol() == ',') {
-            symbolTag();
 
-            keyOrIdTag();
-
-            identifierTag();
-        }
-
-        closeTag("parameterList");
-
-    }
-
-    public void compileSubroutineBody() {
-        openTag("subroutineBody");
-        symbolTag();
-        compileVarDec();
-        compileStatements();
-        symbolTag();
-        closeTag("subroutineBody");
-    }
-
-    public void compileVarDec() {
+    public int compileVarDec() {
+        int count = 0;
         while (tokenizer.keyWord() == KeyWord.VAR) {
-
+            count++;
             openTag("varDec");
             keyWordTag();
+            String type = getKeyOrId();
             keyOrIdTag();
+            String name = tokenizer.identifier();
             identifierTag();
+            st.define(name, type, Kind.VAR);
             while (tokenizer.symbol() == ',') {
+                count++;
                 symbolTag();
+                name = tokenizer.identifier();
+                st.define(name, type, Kind.VAR);
                 identifierTag();
             }
             symbolTag();
             closeTag("varDec");
         }
 
+        return count;
+
+    }
+
+    public void compileClassVarDec() {
+        openTag("classVarDec");
+
+        KeyWord kind = tokenizer.keyWord();
+        keyWordTag();
+        String type = getKeyOrId();
+        keyOrIdTag();
+        String name = tokenizer.identifier();
+        identifierTag();
+        st.define(name, type, Kind.of(kind));
+        while (tokenizer.symbol() == ',') {
+            symbolTag();
+            name = tokenizer.identifier();
+            st.define(name, type, Kind.of(kind));
+            identifierTag();
+        }
+        symbolTag();
+
+        closeTag("classVarDec");
+    }
+
+    public int compileParameterList() {
+        int count = 0;
+        openTag("parameterList");
+        if (tokenizer.symbol() != ')') {
+            String type = getKeyOrId();
+            keyOrIdTag();
+            String name = tokenizer.identifier();
+            identifierTag();
+            st.define(name, type, Kind.ARG);
+            count++;
+        }
+        while (tokenizer.symbol() == ',') {
+            symbolTag();
+            String type = getKeyOrId();
+            keyOrIdTag();
+            String name = tokenizer.identifier();
+            identifierTag();
+            st.define(name, type, Kind.ARG);
+            count++;
+        }
+
+        closeTag("parameterList");
+        return count;
+
+    }
+
+    public int compileExpressionList() {
+        int count = 0;
+        openTag("expressionList");
+        if (tokenizer.symbol() != ')') {
+            compileExpression();
+            count++;
+        }
+
+        while (tokenizer.symbol() == ',') {
+            symbolTag();
+            compileExpression();
+            count++;
+        }
+        closeTag("expressionList");
+        return count;
     }
 
     public void compileStatements() {
@@ -264,9 +307,18 @@ public class CompilationEngine implements Closeable {
         closeTag("statements");
     }
 
+    private static Map<Kind, Segment> kindSegmentMap = new HashMap<>();
+    {
+        kindSegmentMap.put(Kind.ARG, Segment.ARG);
+        kindSegmentMap.put(Kind.STATIC, Segment.STATIC);
+        kindSegmentMap.put(Kind.FIELD, Segment.THIS);
+        kindSegmentMap.put(Kind.VAR, Segment.LOCAL);
+    }
+
     public void compileLet() {
         openTag("letStatement");
         keyWordTag();
+        String name = tokenizer.identifier();
         identifierTag();
         if (tokenizer.symbol() == '[') {
             symbolTag();
@@ -275,6 +327,7 @@ public class CompilationEngine implements Closeable {
         }
         symbolTag();
         compileExpression();
+        vmWriter.writePop(kindSegmentMap.get(st.kindOf(name)), st.indexOf(name));
         symbolTag();
         closeTag("letStatement");
     }
@@ -283,12 +336,16 @@ public class CompilationEngine implements Closeable {
         openTag("ifStatement");
         keyWordTag();
         symbolTag();
+        String l1 = "IF_TRUE" + ifCount, l2 = "IF_FALSE" + ifCount++;
         compileExpression();
         symbolTag();
         symbolTag();
+        vmWriter.writeArithmetic(Command.NOT);
+        vmWriter.writeIf(l1);
         compileStatements();
         symbolTag();
-
+        vmWriter.writeGoto(l2);
+        vmWriter.writeLabel(l1);
         if (tokenizer.keyWord() == KeyWord.ELSE) {
 
             keyWordTag();
@@ -296,7 +353,7 @@ public class CompilationEngine implements Closeable {
             compileStatements();
             symbolTag();
         }
-
+        vmWriter.writeLabel(l2);
         closeTag("ifStatement");
     }
 
@@ -304,10 +361,16 @@ public class CompilationEngine implements Closeable {
         openTag("whileStatement");
         keyWordTag();
         symbolTag();
+        String l1 = "WHILE_EXP" + whileCount, l2 = "WHILE_END" + whileCount++;
+        vmWriter.writeLabel(l1);
         compileExpression();
+        vmWriter.writeArithmetic(Command.NOT);
+        vmWriter.writeIf(l2);
         symbolTag();
         symbolTag();
         compileStatements();
+        vmWriter.writeGoto(l1);
+        vmWriter.writeLabel(l2);
         symbolTag();
         closeTag("whileStatement");
     }
@@ -325,6 +388,7 @@ public class CompilationEngine implements Closeable {
         symbolTag();
         int count = compileExpressionList();
         vmWriter.writeCall(callee, count);
+        vmWriter.writePop(Segment.TEMP, 0);
         symbolTag();
         symbolTag();
         closeTag("doStatement");
@@ -336,7 +400,6 @@ public class CompilationEngine implements Closeable {
         if (tokenizer.symbol() != ';')
             compileExpression();
         else {
-            vmWriter.writePop(Segment.TEMP, 0);
             vmWriter.writePush(Segment.CONST, 0);
         }
         vmWriter.writeReturn();
@@ -389,15 +452,17 @@ public class CompilationEngine implements Closeable {
         openTag("term");
         switch (tokenizer.tokenType()) {
         case IDENTIFIER:
-
+            String id = tokenizer.identifier();
             identifierTag();
             switch (tokenizer.symbol()) {
             case '.':
                 symbolTag();
+                String method = tokenizer.identifier();
                 identifierTag();
                 symbolTag();
-                compileExpressionList();
+                int count = compileExpressionList();
                 symbolTag();
+                vmWriter.writeCall(id + "." + method, count);
                 break;
             case '(':
                 symbolTag();
@@ -411,6 +476,7 @@ public class CompilationEngine implements Closeable {
                 break;
 
             default:
+                vmWriter.writePush(kindSegmentMap.get(st.kindOf(id)), st.indexOf(id));
                 break;
             }
 
@@ -420,6 +486,20 @@ public class CompilationEngine implements Closeable {
             integerConstant();
             break;
         case KEYWORD:
+            switch (tokenizer.keyWord()) {
+            case NULL:
+                vmWriter.writePush(Segment.CONST, 0);
+                break;
+            case TRUE:
+                vmWriter.writePush(Segment.CONST, 0);
+                vmWriter.writeArithmetic(Command.NOT);
+                break;
+            case FALSE:
+                vmWriter.writePush(Segment.CONST, 0);
+                break;
+            default:
+                break;
+            }
             keyWordTag();
             break;
         case STRING_CONST:
@@ -428,9 +508,14 @@ public class CompilationEngine implements Closeable {
         case SYMBOL:
 
             if (tokenizer.symbol() == '~') {
-                vmWriter.writeArithmetic(Command.NOT);
                 symbolTag();
                 compileTerm();
+                vmWriter.writeArithmetic(Command.NOT);
+            } else if (tokenizer.symbol() == '-') {
+
+                symbolTag();
+                compileTerm();
+                vmWriter.writeArithmetic(Command.NEG);
             } else if (tokenizer.symbol() == '(') {
                 symbolTag();
                 compileExpression();
@@ -444,23 +529,6 @@ public class CompilationEngine implements Closeable {
 
         }
         closeTag("term");
-    }
-
-    public int compileExpressionList() {
-        int count = 0;
-        openTag("expressionList");
-        if (tokenizer.symbol() != ')') {
-            compileExpression();
-            count++;
-        }
-
-        while (tokenizer.symbol() == ',') {
-            symbolTag();
-            compileExpression();
-            count++;
-        }
-        closeTag("expressionList");
-        return count;
     }
 
     @Override

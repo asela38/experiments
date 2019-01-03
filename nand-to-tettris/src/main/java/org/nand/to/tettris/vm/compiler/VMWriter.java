@@ -56,7 +56,7 @@ public class VMWriter implements Closeable {
     }
 
     public void writeLabel(String label) {
-        writer.printf("(%s) %n", label);
+        writer.printf("label %s %n", label);
     }
 
     public void writeIf(String label) {

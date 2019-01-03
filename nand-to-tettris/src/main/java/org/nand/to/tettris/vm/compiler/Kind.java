@@ -10,7 +10,7 @@ public enum Kind {
         this.keyWord = keyWord;
     }
 
-    public Kind of(KeyWord keyWord) {
+    public static Kind of(KeyWord keyWord) {
         for (Kind kind : Kind.values()) {
             if (kind.keyWord == keyWord) {
                 return kind;

@@ -6,6 +6,11 @@ public class JackCompilerTest {
 
     @Test
     public void testSeven() {
-        JackAnalyzer.main("./src/test/resources/project11/Seven");
+        JackCompiler.main("./src/test/resources/project11/Seven");
+    }
+
+    @Test
+    public void testConvertToBin() {
+        JackCompiler.main("./src/test/resources/project11/ConvertToBin");
     }
 }
