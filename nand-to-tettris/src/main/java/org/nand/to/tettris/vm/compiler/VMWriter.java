@@ -72,7 +72,7 @@ public class VMWriter implements Closeable {
     }
 
     public void writeFunction(String name, int nLocals) {
-        writer.printf("call %s %d %n", name, nLocals);
+        writer.printf("function %s %d %n", name, nLocals);
     }
 
     public void writeReturn() {

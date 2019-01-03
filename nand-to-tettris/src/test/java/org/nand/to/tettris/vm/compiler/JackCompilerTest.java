@@ -5,7 +5,7 @@ import org.junit.Test;
 public class JackCompilerTest {
 
     @Test
-    public void testSquare() {
-        JackCompiler.main("./src/test/resources/project11/Average");
+    public void testSeven() {
+        JackAnalyzer.main("./src/test/resources/project11/Seven");
     }
 }

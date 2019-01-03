@@ -7,25 +7,25 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
 
+import org.nand.to.tettris.vm.compiler.VMWriter.Command;
+import org.nand.to.tettris.vm.compiler.VMWriter.Segment;
+
 public class CompilationEngine implements Closeable {
     private JackTokenizer tokenizer;
     private PrintWriter   writer;
     private VMWriter      vmWriter;
+    private String        className;
+    private SymbolTable   st;
 
     public CompilationEngine(File inFile, File outFile, File vmFile) throws IOException {
-        tokenizer = new JackTokenizer(inFile);
+        this(inFile, vmFile);
         writer = new PrintWriter(outFile);
-        vmWriter = new VMWriter(vmFile);
-
-        // debugTokenizer();
-
-        compileClass();
     }
 
     public CompilationEngine(File inFile, File vmFile) throws IOException {
         tokenizer = new JackTokenizer(inFile);
         vmWriter = new VMWriter(vmFile);
-
+        st = new SymbolTable();
         // debugTokenizer();
 
         compileClass();
@@ -121,6 +121,7 @@ public class CompilationEngine implements Closeable {
         openTag("class");
 
         keyWordTag();
+        className = tokenizer.identifier();
         identifierTag();
         symbolTag();
 
@@ -167,13 +168,24 @@ public class CompilationEngine implements Closeable {
             identifierTag();
     }
 
+    private String getKeyOrId() {
+        if (tokenizer.tokenType() == TokenType.KEYWORD)
+            return tokenizer.keyWord().toString().toLowerCase();
+        else
+            return tokenizer.identifier();
+    }
+
     public void compileSubroutineDec() {
         openTag("subroutineDec");
+        KeyWord subroutineType = tokenizer.keyWord();
         keyWordTag();
+        String returnType = getKeyOrId();
         keyOrIdTag();
+        String routineName = tokenizer.identifier();
         identifierTag();
         symbolTag();
         compileParameterList();
+        vmWriter.writeFunction(className + "." + routineName, 0);
         symbolTag();
         compileSubroutineBody();
         closeTag("subroutineDec");
@@ -303,13 +315,16 @@ public class CompilationEngine implements Closeable {
     public void compileDo() {
         openTag("doStatement");
         keyWordTag();
+        String callee = tokenizer.identifier();
         identifierTag();
         if (tokenizer.symbol() == '.') {
             symbolTag();
+            callee += "." + tokenizer.identifier();
             identifierTag();
         }
         symbolTag();
-        compileExpressionList();
+        int count = compileExpressionList();
+        vmWriter.writeCall(callee, count);
         symbolTag();
         symbolTag();
         closeTag("doStatement");
@@ -320,6 +335,11 @@ public class CompilationEngine implements Closeable {
         keyWordTag();
         if (tokenizer.symbol() != ';')
             compileExpression();
+        else {
+            vmWriter.writePop(Segment.TEMP, 0);
+            vmWriter.writePush(Segment.CONST, 0);
+        }
+        vmWriter.writeReturn();
         symbolTag();
         closeTag("returnStatement");
     }
@@ -330,8 +350,37 @@ public class CompilationEngine implements Closeable {
         openTag("expression");
         compileTerm();
         while (EOPS.contains(String.valueOf(tokenizer.symbol()))) {
+            String symbol = String.valueOf(tokenizer.symbol());
             symbolTag();
             compileTerm();
+            switch (symbol) {
+            case ">":
+                vmWriter.writeArithmetic(Command.GT);
+                break;
+            case "<":
+                vmWriter.writeArithmetic(Command.LT);
+                break;
+            case "&":
+                vmWriter.writeArithmetic(Command.AND);
+                break;
+            case "|":
+                vmWriter.writeArithmetic(Command.OR);
+                break;
+            case "\"":
+                vmWriter.writeCall("Math.divide", 2);
+                break;
+            case "*":
+                vmWriter.writeCall("Math.multiply", 2);
+                break;
+            case "+":
+                vmWriter.writeArithmetic(Command.ADD);
+                break;
+            case "-":
+                vmWriter.writeArithmetic(Command.SUB);
+                break;
+            default:
+                break;
+            }
         }
         closeTag("expression");
     }
@@ -367,6 +416,7 @@ public class CompilationEngine implements Closeable {
 
             break;
         case INT_CONST:
+            vmWriter.writePush(Segment.CONST, tokenizer.intVal());
             integerConstant();
             break;
         case KEYWORD:
@@ -378,6 +428,7 @@ public class CompilationEngine implements Closeable {
         case SYMBOL:
 
             if (tokenizer.symbol() == '~') {
+                vmWriter.writeArithmetic(Command.NOT);
                 symbolTag();
                 compileTerm();
             } else if (tokenizer.symbol() == '(') {
@@ -395,15 +446,21 @@ public class CompilationEngine implements Closeable {
         closeTag("term");
     }
 
-    public void compileExpressionList() {
+    public int compileExpressionList() {
+        int count = 0;
         openTag("expressionList");
-        if (tokenizer.symbol() != ')')
+        if (tokenizer.symbol() != ')') {
             compileExpression();
+            count++;
+        }
+
         while (tokenizer.symbol() == ',') {
             symbolTag();
             compileExpression();
+            count++;
         }
         closeTag("expressionList");
+        return count;
     }
 
     @Override
