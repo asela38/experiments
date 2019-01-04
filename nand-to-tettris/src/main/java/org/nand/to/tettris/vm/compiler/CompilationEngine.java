@@ -174,6 +174,11 @@ public class CompilationEngine implements Closeable {
         String routineName = tokenizer.identifier();
         identifierTag();
         symbolTag();
+
+        if (subroutineType == KeyWord.METHOD) {
+            st.define("other", className, Kind.ARG);
+        }
+
         int count = compileParameterList();
 
         symbolTag();
@@ -198,7 +203,6 @@ public class CompilationEngine implements Closeable {
         closeTag("subroutineDec");
 
     }
-
 
     public int compileVarDec() {
         int count = 0;
@@ -248,7 +252,11 @@ public class CompilationEngine implements Closeable {
     }
 
     public int compileParameterList() {
-        int count = 0;
+        return compileParameterList(0);
+    }
+
+    public int compileParameterList(int initCount) {
+        int count = initCount;
         openTag("parameterList");
         if (tokenizer.symbol() != ')') {
             String type = getKeyOrId();
@@ -334,12 +342,23 @@ public class CompilationEngine implements Closeable {
         if (tokenizer.symbol() == '[') {
             symbolTag();
             compileExpression();
+            vmWriter.writePush(kindSegmentMap.get(st.kindOf(name)), st.indexOf(name));
+            vmWriter.writeArithmetic(Command.ADD);
             symbolTag();
-        }
+
+            symbolTag();
+            compileExpression();
+            vmWriter.writePop(Segment.TEMP, 0);
+            vmWriter.writePop(Segment.POINTER, 1);
+            vmWriter.writePush(Segment.TEMP, 0);
+            vmWriter.writePop(Segment.THAT, 0);
+            symbolTag();
+        } else {
         symbolTag();
         compileExpression();
         vmWriter.writePop(kindSegmentMap.get(st.kindOf(name)), st.indexOf(name));
         symbolTag();
+        }
         closeTag("letStatement");
     }
 
@@ -461,7 +480,7 @@ public class CompilationEngine implements Closeable {
             case "=":
                 vmWriter.writeArithmetic(Command.EQ);
                 break;
-            case "\"":
+            case "/":
                 vmWriter.writeCall("Math.divide", 2);
                 break;
             case "*":
@@ -513,8 +532,13 @@ public class CompilationEngine implements Closeable {
                 symbolTag();
                 break;
             case '[':
+
                 symbolTag();
                 compileExpression();
+                vmWriter.writePush(kindSegmentMap.get(st.kindOf(id)), st.indexOf(id));
+                vmWriter.writeArithmetic(Command.ADD);
+                vmWriter.writePop(Segment.POINTER, 1);
+                vmWriter.writePush(Segment.THAT, 0);
                 symbolTag();
                 break;
 
@@ -549,6 +573,13 @@ public class CompilationEngine implements Closeable {
             keyWordTag();
             break;
         case STRING_CONST:
+            char[] arr = tokenizer.stringVal().toCharArray();
+            vmWriter.writePush(Segment.CONST, arr.length);
+            vmWriter.writeCall("String.new", 1);
+            for (char c : arr) {
+                vmWriter.writePush(Segment.CONST, c);
+                vmWriter.writeCall("String.appendChar", 2);
+            }
             stringConstant();
             break;
         case SYMBOL:

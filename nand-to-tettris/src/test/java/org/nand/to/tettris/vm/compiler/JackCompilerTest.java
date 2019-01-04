@@ -18,4 +18,19 @@ public class JackCompilerTest {
     public void testSquare() {
         JackCompiler.main("./src/test/resources/project11/Square");
     }
+
+    @Test
+    public void testAverage() {
+        JackCompiler.main("./src/test/resources/project11/Average");
+    }
+
+    @Test
+    public void testPong() {
+        JackCompiler.main("./src/test/resources/project11/Pong");
+    }
+
+    @Test
+    public void testPongBall() {
+        JackCompiler.main("./src/test/resources/project11/Pong/Ball.jack");
+    }
 }
