@@ -174,6 +174,11 @@ public class CompilationEngine implements Closeable {
         String routineName = tokenizer.identifier();
         identifierTag();
         symbolTag();
+
+        if (subroutineType == KeyWord.METHOD) {
+            st.define("other", className, Kind.ARG);
+        }
+
         int count = compileParameterList();
 
         symbolTag();
@@ -181,13 +186,23 @@ public class CompilationEngine implements Closeable {
         symbolTag();
         int countLocal = compileVarDec();
         vmWriter.writeFunction(className + "." + routineName, countLocal);
+
+        if (subroutineType == KeyWord.CONSTRUCTOR) {
+            int fieldCount = st.varCount(Kind.FIELD);
+            vmWriter.writePush(Segment.CONST, fieldCount);
+            vmWriter.writeCall("Memory.alloc", 1);
+            vmWriter.writePop(Segment.POINTER, 0);
+        } else if (subroutineType == KeyWord.METHOD) {
+            vmWriter.writePush(Segment.ARG, 0);
+            vmWriter.writePop(Segment.POINTER, 0);
+        }
+
         compileStatements();
         symbolTag();
         closeTag("subroutineBody");
         closeTag("subroutineDec");
 
     }
-
 
     public int compileVarDec() {
         int count = 0;
@@ -237,7 +252,11 @@ public class CompilationEngine implements Closeable {
     }
 
     public int compileParameterList() {
-        int count = 0;
+        return compileParameterList(0);
+    }
+
+    public int compileParameterList(int initCount) {
+        int count = initCount;
         openTag("parameterList");
         if (tokenizer.symbol() != ')') {
             String type = getKeyOrId();
@@ -323,12 +342,23 @@ public class CompilationEngine implements Closeable {
         if (tokenizer.symbol() == '[') {
             symbolTag();
             compileExpression();
+            vmWriter.writePush(kindSegmentMap.get(st.kindOf(name)), st.indexOf(name));
+            vmWriter.writeArithmetic(Command.ADD);
             symbolTag();
-        }
+
+            symbolTag();
+            compileExpression();
+            vmWriter.writePop(Segment.TEMP, 0);
+            vmWriter.writePop(Segment.POINTER, 1);
+            vmWriter.writePush(Segment.TEMP, 0);
+            vmWriter.writePop(Segment.THAT, 0);
+            symbolTag();
+        } else {
         symbolTag();
         compileExpression();
         vmWriter.writePop(kindSegmentMap.get(st.kindOf(name)), st.indexOf(name));
         symbolTag();
+        }
         closeTag("letStatement");
     }
 
@@ -380,14 +410,32 @@ public class CompilationEngine implements Closeable {
         keyWordTag();
         String callee = tokenizer.identifier();
         identifierTag();
+        String obj = null;
+        int offset = 0;
         if (tokenizer.symbol() == '.') {
+
+            String type = st.typeOf(callee);
+            if (type != null && !type.isEmpty()) {
+                obj = callee;
+                callee = type;
+                offset = 1;
+            }
+
             symbolTag();
             callee += "." + tokenizer.identifier();
             identifierTag();
+            if (obj != null) {
+                vmWriter.writePush(kindSegmentMap.get(st.kindOf(obj)), st.indexOf(obj));
+            }
+        } else {
+            vmWriter.writePush(Segment.POINTER, 0);
+            offset = 1;
+            callee = className + "." + callee;
         }
         symbolTag();
+
         int count = compileExpressionList();
-        vmWriter.writeCall(callee, count);
+        vmWriter.writeCall(callee, count + offset);
         vmWriter.writePop(Segment.TEMP, 0);
         symbolTag();
         symbolTag();
@@ -432,7 +480,7 @@ public class CompilationEngine implements Closeable {
             case "=":
                 vmWriter.writeArithmetic(Command.EQ);
                 break;
-            case "\"":
+            case "/":
                 vmWriter.writeCall("Math.divide", 2);
                 break;
             case "*":
@@ -460,12 +508,23 @@ public class CompilationEngine implements Closeable {
             switch (tokenizer.symbol()) {
             case '.':
                 symbolTag();
+                String obj = null;
+                int offset = 0;
+                String type = st.typeOf(id);
+                if (type != null && !type.isEmpty()) {
+                    obj = id;
+                    id = type;
+                    offset = 1;
+                }
                 String method = tokenizer.identifier();
                 identifierTag();
                 symbolTag();
+                if (obj != null) {
+                    vmWriter.writePush(kindSegmentMap.get(st.kindOf(obj)), st.indexOf(obj));
+                }
                 int count = compileExpressionList();
                 symbolTag();
-                vmWriter.writeCall(id + "." + method, count);
+                vmWriter.writeCall(id + "." + method, count + offset);
                 break;
             case '(':
                 symbolTag();
@@ -473,8 +532,13 @@ public class CompilationEngine implements Closeable {
                 symbolTag();
                 break;
             case '[':
+
                 symbolTag();
                 compileExpression();
+                vmWriter.writePush(kindSegmentMap.get(st.kindOf(id)), st.indexOf(id));
+                vmWriter.writeArithmetic(Command.ADD);
+                vmWriter.writePop(Segment.POINTER, 1);
+                vmWriter.writePush(Segment.THAT, 0);
                 symbolTag();
                 break;
 
@@ -500,12 +564,22 @@ public class CompilationEngine implements Closeable {
             case FALSE:
                 vmWriter.writePush(Segment.CONST, 0);
                 break;
+            case THIS:
+                vmWriter.writePush(Segment.POINTER, 0);
+                break;
             default:
                 break;
             }
             keyWordTag();
             break;
         case STRING_CONST:
+            char[] arr = tokenizer.stringVal().toCharArray();
+            vmWriter.writePush(Segment.CONST, arr.length);
+            vmWriter.writeCall("String.new", 1);
+            for (char c : arr) {
+                vmWriter.writePush(Segment.CONST, c);
+                vmWriter.writeCall("String.appendChar", 2);
+            }
             stringConstant();
             break;
         case SYMBOL:

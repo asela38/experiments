@@ -27,6 +27,7 @@ public class JackTokenizer implements Closeable {
                 .collect(Collectors.joining(" "));
 
         content = content.replaceAll("\\/\\*\\*.*\\*\\/", "");
+        content = content.replaceAll("\t", "");
         chars = content.toCharArray();
 
     }
