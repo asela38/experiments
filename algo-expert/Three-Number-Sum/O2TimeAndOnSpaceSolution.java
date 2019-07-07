@@ -16,7 +16,7 @@ class Program {
 			left < size - 2 ; 
 			left++, mid = left + 1, right = size -1
 		) {
-			while(true) {
+			while(mid >= right) {
 				int sum = sum(array, left, mid, right);
 		//		print(array, left, mid, right);
 				if(sum == targetSum) {
@@ -28,10 +28,9 @@ class Program {
 				} else if (sum < targetSum ) {
 					mid++;
 				}
-				if(mid >= right) break;
 			}
-		}
-		
+		}	
+
 	//	list.forEach(k -> System.out.println(Arrays.toString(k)));					
 		return list;
   }
